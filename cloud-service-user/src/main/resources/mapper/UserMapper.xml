@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.titan.arm.dao.UserDao">
+
+    <!--返回结构-->
+    <resultMap id="UserMap" type="com.titan.arm.entity.User">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+    </resultMap>
+    
+    <!--插入一条-->
+    <insert id="insert" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+        insert into user(username,password) values (#{username},#{password})
+    </insert>
+
+    <!--根据username精确查询-->
+    <select id="queryOneByUsername" parameterType="java.lang.String" resultMap="UserMap">
+        select * from user where username=#{username} limit 1
+    </select>
+
+    <!--根据username模糊查询-->
+    <select id="queryByUsername" parameterType="java.lang.String" resultMap="UserMap">
+        select * from user where 1=1
+            <if test="username!=null">
+               and username like CONCAT(CONCAT('%',#{username},'%'))
+            </if>
+        order by id desc
+        limit #{offset},#{limit}
+    </select>
+
+    <!--查询全部-->
+    <select id="findAllUser"  resultMap="UserMap">
+        select * from user
+    </select>
+
+    <!--根据id删除-->
+    <delete id="delete">
+        delete from user where id=#{id}
+    </delete>
+
+    <!--根据id批量删除-->
+    <delete id="deleteUsers">
+        delete from user where 1=1
+        <if test="ids!=null and ids.size()!=0">
+              and id in
+                   <foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+                       #{item}
+                   </foreach>
+        </if>
+    </delete>
+
+    <!--根据id修改密码-->
+    <update id="update">
+        update user
+        <set>
+            <if test="password!=null">
+                  password=#{password}
+            </if>
+        </set>
+        where username=#{username}
+    </update>
+
+    <select id="count" resultType="java.lang.Integer">
+        select count(*) from user
+        where 1=1
+        <if test="username!=null">
+            and username like CONCAT(CONCAT('%',#{username},'%'))
+        </if>
+    </select>
+
+    <select id="findUserById" parameterType="java.lang.Long" resultMap="UserMap">
+        select * from user where id=#{id}
+    </select>
+</mapper>
