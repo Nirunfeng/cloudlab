@@ -24,4 +24,7 @@ public class UserParam {
 
     @ApiModelProperty("密码")
     private String password;
+
+    @ApiModelProperty("头像图片")
+    private String imgUrl;
 }

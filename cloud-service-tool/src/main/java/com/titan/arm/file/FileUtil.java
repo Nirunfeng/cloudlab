@@ -49,7 +49,11 @@ public class FileUtil {
      * @return
      */
     public static String getSuffix(String fileName) {
-        return fileName.substring(fileName.lastIndexOf("."));
+        try {
+            return fileName.substring(fileName.lastIndexOf("."));
+        }catch (Exception e){
+            return ".png";
+        }
     }
 
     /**
