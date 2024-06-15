@@ -28,4 +28,7 @@ public class User {
 
     @ApiModelProperty("密码")
     private String password;
+
+    @ApiModelProperty("头像url路径")
+    private String imgUrl;
 }

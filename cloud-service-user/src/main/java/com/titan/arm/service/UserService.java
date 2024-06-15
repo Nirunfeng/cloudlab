@@ -2,6 +2,7 @@ package com.titan.arm.service;
 
 import com.titan.arm.entity.User;
 import com.titan.arm.param.UserParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -34,4 +35,11 @@ public interface UserService {
     User findUser(Long id) throws Exception;
 
     User login(UserParam param) throws Exception;
+
+    /**
+     * 上传头像文件
+     * @param file
+     * @return
+     */
+    String upload(MultipartFile file);
 }

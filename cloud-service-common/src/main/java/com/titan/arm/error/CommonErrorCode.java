@@ -25,6 +25,7 @@ public enum CommonErrorCode {
     ERR_USER_UPDATE_ERROR("0x100016","用户密码修改失败"),
     ERR_LOGIN_ERROR("0x100017","用户登录失败"),
     ERR_PASSWORD_REPEAT_ERROR("0x100018","密码与原密码一致，请重新输入"),
+    ERR_IMAGE_UPLOAD_ERROR("0x100019","头像上传失败"),
     ERR_USER_NOT_EXIST_ERROR("0100020","用户名密码错误或用户不存在"),
     ;
     private String code;

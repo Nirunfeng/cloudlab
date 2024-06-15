@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
@@ -197,6 +198,19 @@ public class UserController {
             log.error(CommonErrorCode.ERR_LOGIN_ERROR.getMsg(),e);
             return BaseResult.error(CommonErrorCode.ERR_LOGIN_ERROR.getCode(),
                     CommonErrorCode.ERR_LOGIN_ERROR.getMsg());
+        }
+    }
+
+    @PostMapping("/avatarUpload.do")
+    @ApiOperation("上传用户头像")
+    public BaseResult<String> uploadUserAvatar(@RequestParam("file") MultipartFile file){
+        try{
+            String imgUrl=userService.upload(file);
+            return BaseResult.success(imgUrl);
+        }catch (Exception e){
+            log.error(CommonErrorCode.ERR_IMAGE_UPLOAD_ERROR.getMsg(),e);
+            return BaseResult.error(CommonErrorCode.ERR_IMAGE_UPLOAD_ERROR.getCode(),
+                    CommonErrorCode.ERR_IMAGE_UPLOAD_ERROR.getMsg());
         }
     }
 }
