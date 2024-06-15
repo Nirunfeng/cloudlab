@@ -2,6 +2,7 @@ package com.titan.arm.service.impl;
 
 import com.titan.arm.dao.UserDao;
 import com.titan.arm.entity.User;
+import com.titan.arm.param.UserParam;
 import com.titan.arm.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -83,6 +84,12 @@ public class UserServiceImpl implements UserService {
     public User findUser(Long id) throws Exception {
         User user=new User();
         user=userDao.findUserById(id);
+        return user;
+    }
+
+    @Override
+    public User login(UserParam param) throws Exception{
+        User user=userDao.login(param.getUsername(),param.getPassword());
         return user;
     }
 }

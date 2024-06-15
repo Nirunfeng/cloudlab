@@ -25,6 +25,14 @@ public interface UserDao {
     public int insert(User user);
 
     /**
+     * 登录查询
+     * @param username
+     * @param password
+     * @return
+     */
+    public User login(@Param("username") String username,@Param("password") String password);
+
+    /**
      * 查询总数
      * @param username
      * @return

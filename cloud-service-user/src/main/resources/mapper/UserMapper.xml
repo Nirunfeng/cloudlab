@@ -72,4 +72,8 @@
     <select id="findUserById" parameterType="java.lang.Long" resultMap="UserMap">
         select * from user where id=#{id}
     </select>
+
+    <select id="login" resultMap="UserMap">
+        select * from user where username=#{username} and password=#{password}
+    </select>
 </mapper>

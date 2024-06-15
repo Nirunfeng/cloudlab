@@ -1,6 +1,7 @@
 package com.titan.arm.service;
 
 import com.titan.arm.entity.User;
+import com.titan.arm.param.UserParam;
 
 import java.util.List;
 
@@ -31,4 +32,6 @@ public interface UserService {
     public Integer getCount(String username) throws Exception;
 
     User findUser(Long id) throws Exception;
+
+    User login(UserParam param) throws Exception;
 }

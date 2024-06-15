@@ -36,7 +36,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/create.do")
+    @PostMapping("/register.do")
     @ApiOperation("创建用户")
     public BaseResult<Integer> create(@RequestBody UserParam param) {
         try {
@@ -47,7 +47,7 @@ public class UserController {
                 User user = userService.queryOneByUsername(param.getUsername());
                 if (user != null) {
                     return BaseResult.error(CommonErrorCode.ERR_USER_NAME_REPEAT_ERROR.getCode(),
-                            CommonErrorCode.ERR_DATABASE_ERROR.getMsg());
+                            CommonErrorCode.ERR_USER_NAME_REPEAT_ERROR.getMsg());
                 }
                 user = new User();
                 BeanUtils.copyProperties(param, user);
@@ -138,6 +138,13 @@ public class UserController {
                 return BaseResult.error(CommonErrorCode.ERR_USER_PARAM_NULL_ERROR.getCode(),
                         CommonErrorCode.ERR_USER_PARAM_NULL_ERROR.getMsg());
             }
+            /*现根据username查询一遍，判断密码是否重复*/
+            User user=userService.queryOneByUsername(param.getUsername());
+            if (user!=null&&user.getPassword().equals(param.getPassword())){
+                log.error(CommonErrorCode.ERR_PASSWORD_REPEAT_ERROR.getMsg());
+                return BaseResult.error(CommonErrorCode.ERR_PASSWORD_REPEAT_ERROR.getCode(),
+                        CommonErrorCode.ERR_PASSWORD_REPEAT_ERROR.getMsg());
+            }
             Integer result=userService.update(param.getUsername(),param.getPassword());
             return BaseResult.success(result);
         } catch (Exception e) {
@@ -158,7 +165,7 @@ public class UserController {
             log.info(" quer id is : {}",id);
             if (null==id){
                 log.error("id为空，无法查询");
-                return BaseResult.error(-1,"id为空，无法查询");
+                return BaseResult.error("-1","id为空，无法查询");
             }
             User user=userService.findUser(id);
             return BaseResult.success(user);
@@ -166,6 +173,30 @@ public class UserController {
             log.error(CommonErrorCode.ERR_USER_QUERY_ERROR.getMsg(), e);
             return BaseResult.error(CommonErrorCode.ERR_USER_QUERY_ERROR.getCode(),
                     CommonErrorCode.ERR_USER_QUERY_ERROR.getMsg());
+        }
+    }
+
+    @PostMapping("/login.do")
+    @ApiOperation("登录接口")
+    public BaseResult<User> login(@RequestBody UserParam param){
+        try {
+            log.info(" login param is {}",JacksonUtil.toJSONString(param));
+            if (StringUtils.isEmpty(param.getUsername())||StringUtils.isEmpty(param.getPassword())){
+                log.error(CommonErrorCode.ERR_USER_PARAM_NULL_ERROR.getMsg());
+                return BaseResult.error(CommonErrorCode.ERR_USER_PARAM_NULL_ERROR.getCode(),
+                        CommonErrorCode.ERR_USER_PARAM_NULL_ERROR.getMsg());
+            }
+            User user=userService.login(param);
+            if (user==null){
+                log.error(CommonErrorCode.ERR_USER_NOT_EXIST_ERROR.getMsg());
+                return BaseResult.error(CommonErrorCode.ERR_USER_NOT_EXIST_ERROR.getCode(),
+                        CommonErrorCode.ERR_USER_NOT_EXIST_ERROR.getMsg());
+            }
+            return BaseResult.success(user);
+        }catch (Exception e){
+            log.error(CommonErrorCode.ERR_LOGIN_ERROR.getMsg(),e);
+            return BaseResult.error(CommonErrorCode.ERR_LOGIN_ERROR.getCode(),
+                    CommonErrorCode.ERR_LOGIN_ERROR.getMsg());
         }
     }
 }

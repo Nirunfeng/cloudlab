@@ -13,8 +13,8 @@ import lombok.Data;
 @Data
 public class BaseResult <T>{
 
-    //返回码 成功：200
-    private Integer code;
+    //返回码 成功：0
+    private String code;
 
     //操作结果: 成功：success  失败：failed
     private String msg;
@@ -24,13 +24,13 @@ public class BaseResult <T>{
 
     public static BaseResult success(Object data){
         BaseResult baseResult=new BaseResult();
-        baseResult.code=200;
+        baseResult.code="0";
         baseResult.msg="success";
         baseResult.data=data;
         return baseResult;
     }
 
-    public static BaseResult error(Integer code,String msg){
+    public static BaseResult error(String code,String msg){
         BaseResult baseResult=new BaseResult();
         baseResult.code=code;
         baseResult.msg=msg;
