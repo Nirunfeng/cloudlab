@@ -8,11 +8,12 @@
         <result property="username" column="username" jdbcType="VARCHAR"/>
         <result property="password" column="password" jdbcType="VARCHAR"/>
         <result property="imgUrl" column="img_url" jdbcType="LONGVARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
     </resultMap>
     
     <!--插入一条-->
     <insert id="insert" parameterType="User" useGeneratedKeys="true" keyProperty="id">
-        insert into user(username,password,img_url) values (#{username},#{password},#{imgUrl})
+        insert into user(username,password,img_url,email) values (#{username},#{password},#{imgUrl},#{email})
     </insert>
 
     <!--根据username精确查询-->

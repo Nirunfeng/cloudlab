@@ -31,4 +31,7 @@ public class User {
 
     @ApiModelProperty("头像url路径")
     private String imgUrl;
+
+    @ApiModelProperty("邮箱")
+    private String email;
 }

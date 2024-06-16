@@ -4,6 +4,7 @@ import com.titan.arm.entity.User;
 import com.titan.arm.param.UserParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -42,4 +43,12 @@ public interface UserService {
      * @return
      */
     String upload(MultipartFile file);
+
+    /**
+     * 发送邮件验证码
+     * @param email
+     * @param session
+     * @return
+     */
+    Boolean sendVerCode(String email, HttpSession session)  throws  Exception;
 }

@@ -9,12 +9,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * TODO
@@ -31,6 +35,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao;
 
+    /**
+     * 邮件发送服务
+     */
+    @Autowired
+    private JavaMailSender mailSender;
+
     @Value("${web.avatar.upload-path}")
     private String avatarPath;
 
@@ -43,18 +53,24 @@ public class UserServiceImpl implements UserService {
     @Value("${server.servlet.context-path}")
     private String context;
 
+    /**
+     * 邮件发送代理，所有邮件由该邮箱发送
+     */
+    @Value("${spring.mail.username}")
+    private String mailProxy;
+
 
     @Override
     public int insert(User user) throws Exception {
-        int result=userDao.insert(user);
-        log.info("插入结果,{}",result);
+        int result = userDao.insert(user);
+        log.info("插入结果,{}", result);
         return result;
     }
 
     @Override
     public List<User> queryByUsername(String username, Integer pageNo, Integer pageSize) throws Exception {
-        List<User> userList=new ArrayList<>();
-        userList=userDao.queryByUsername(username,pageNo,pageSize);
+        List<User> userList = new ArrayList<>();
+        userList = userDao.queryByUsername(username, pageNo, pageSize);
         return userList;
     }
 
@@ -66,7 +82,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public int delete(Long id) {
-       return userDao.delete(id);
+        return userDao.delete(id);
     }
 
     @Override
@@ -78,14 +94,14 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public int update(String username, String password) {
-        return userDao.update(username,password);
+        return userDao.update(username, password);
     }
 
     @Override
-    public User queryOneByUsername(String username) throws Exception{
-        User user=null;
-        if (StringUtils.isNotEmpty(username)){
-            user=userDao.queryOneByUsername(username);
+    public User queryOneByUsername(String username) throws Exception {
+        User user = null;
+        if (StringUtils.isNotEmpty(username)) {
+            user = userDao.queryOneByUsername(username);
         }
         return user;
     }
@@ -97,27 +113,65 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUser(Long id) throws Exception {
-        User user=new User();
-        user=userDao.findUserById(id);
+        User user = new User();
+        user = userDao.findUserById(id);
         return user;
     }
 
     @Override
-    public User login(UserParam param) throws Exception{
-        User user=userDao.login(param.getUsername(),param.getPassword());
+    public User login(UserParam param) throws Exception {
+        User user = userDao.login(param.getUsername(), param.getPassword());
         return user;
     }
 
     @Override
     public String upload(MultipartFile file) {
-        String imgUrl=null;
-        if (file!=null){
+        String imgUrl = null;
+        if (file != null) {
             //获得文件名字
-            String fileName=file.getOriginalFilename();
-            imgUrl= FileUtil.upload(file, avatarPath, fileName);
+            String fileName = file.getOriginalFilename();
+            imgUrl = FileUtil.upload(file, avatarPath, fileName);
         }
-        if (StringUtils.isNotEmpty(imgUrl));
-        String fileUrl = "http://"+ip+":"+port+context+"/files/" + imgUrl;
+        if (StringUtils.isNotEmpty(imgUrl)) ;
+        String fileUrl = "http://" + ip + ":" + port + context + "/files/" + imgUrl;
         return fileUrl;
+    }
+
+    /**
+     * 发送邮件验证码
+     *
+     * @param email
+     * @param session
+     * @return
+     */
+    @Override
+    public Boolean sendVerCode(String email, HttpSession session) throws Exception {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setSubject("验证码邮件");//主题
+        //生成随机数
+        String code = randomCode();
+        //将随机数放置到session中
+        session.setAttribute("email",email);
+        session.setAttribute("code",code);
+        //设置过期时间，5分钟
+        session.setMaxInactiveInterval(300);
+        mailMessage.setText("您收到的验证码是："+code+"   5分钟后过期");//内容
+        mailMessage.setTo(email);//发给谁
+        mailMessage.setFrom(mailProxy);//你自己的邮箱
+        mailSender.send(mailMessage);//发送
+        return true;
+    }
+
+    /**
+     * 生成6位随机数
+     * @return
+     */
+    public String randomCode(){
+        StringBuilder str = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < 6; i++) {
+            str.append(random.nextInt(10));
+        }
+        return str.toString();
     }
 }

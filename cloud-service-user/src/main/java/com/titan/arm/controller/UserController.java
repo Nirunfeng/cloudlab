@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,9 +40,26 @@ public class UserController {
 
     @PostMapping("/register.do")
     @ApiOperation("创建用户")
-    public BaseResult<Integer> create(@RequestBody UserParam param) {
+    public BaseResult<Integer> create(@RequestBody UserParam param,HttpSession session) {
         try {
             log.info("user param is {}", JacksonUtil.toJSONString(param));
+            /*判断验证码是否失效*/
+            String email = (String) session.getAttribute("email");
+            String verifyCode = (String) session.getAttribute("code");
+            if (StringUtils.isEmpty(email)||StringUtils.isEmpty(verifyCode)){
+                log.error(CommonErrorCode.ERR_MAIL_VERIFYCODE_UNUSED_ERROR.getMsg());
+                return BaseResult.error(CommonErrorCode.ERR_MAIL_VERIFYCODE_UNUSED_ERROR.getCode(),
+                        CommonErrorCode.ERR_MAIL_VERIFYCODE_UNUSED_ERROR.getMsg());
+            }
+            /*比对验证码和邮箱*/
+            if (!email.equals(param.getEmail().trim())){
+                return BaseResult.error(CommonErrorCode.ERR_MAIL_NOT_VERIFY_ERROR.getCode(),
+                        CommonErrorCode.ERR_MAIL_NOT_VERIFY_ERROR.getMsg());
+            }
+            if (!verifyCode.equals(param.getVerifyCode().trim())){
+                return BaseResult.error(CommonErrorCode.ERR_CODE_NOT_VERIFY_ERROR.getCode(),
+                        CommonErrorCode.ERR_CODE_NOT_VERIFY_ERROR.getMsg());
+            }
             /*判断参数合规性*/
             if (StringUtils.isNotEmpty(param.getUsername()) && StringUtils.isNotEmpty(param.getPassword())) {
                 /*判断是否存在相同的用户名*/
@@ -132,21 +150,21 @@ public class UserController {
     @ApiOperation("修改用户密码")
     public BaseResult<Integer> update(@RequestBody UserParam param) {
         try {
-            log.info("update param is {}",JacksonUtil.toJSONString(param));
+            log.info("update param is {}", JacksonUtil.toJSONString(param));
             /*校验username和password*/
-            if (StringUtils.isEmpty(param.getUsername())||StringUtils.isEmpty(param.getPassword())){
+            if (StringUtils.isEmpty(param.getUsername()) || StringUtils.isEmpty(param.getPassword())) {
                 log.error(CommonErrorCode.ERR_USER_PARAM_NULL_ERROR.getMsg());
                 return BaseResult.error(CommonErrorCode.ERR_USER_PARAM_NULL_ERROR.getCode(),
                         CommonErrorCode.ERR_USER_PARAM_NULL_ERROR.getMsg());
             }
             /*现根据username查询一遍，判断密码是否重复*/
-            User user=userService.queryOneByUsername(param.getUsername());
-            if (user!=null&&user.getPassword().equals(param.getPassword())){
+            User user = userService.queryOneByUsername(param.getUsername());
+            if (user != null && user.getPassword().equals(param.getPassword())) {
                 log.error(CommonErrorCode.ERR_PASSWORD_REPEAT_ERROR.getMsg());
                 return BaseResult.error(CommonErrorCode.ERR_PASSWORD_REPEAT_ERROR.getCode(),
                         CommonErrorCode.ERR_PASSWORD_REPEAT_ERROR.getMsg());
             }
-            Integer result=userService.update(param.getUsername(),param.getPassword());
+            Integer result = userService.update(param.getUsername(), param.getPassword());
             return BaseResult.success(result);
         } catch (Exception e) {
             log.error(CommonErrorCode.ERR_USER_UPDATE_ERROR.getMsg(), e);
@@ -157,20 +175,21 @@ public class UserController {
 
     /**
      * 根据id查询
+     *
      * @return
      */
     @GetMapping("/queryById.do")
     @ApiOperation("根据id查询用户信息")
-    public BaseResult<User> queryById(@RequestParam Long id){
+    public BaseResult<User> queryById(@RequestParam Long id) {
         try {
-            log.info(" quer id is : {}",id);
-            if (null==id){
+            log.info(" quer id is : {}", id);
+            if (null == id) {
                 log.error("id为空，无法查询");
-                return BaseResult.error("-1","id为空，无法查询");
+                return BaseResult.error("-1", "id为空，无法查询");
             }
-            User user=userService.findUser(id);
+            User user = userService.findUser(id);
             return BaseResult.success(user);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(CommonErrorCode.ERR_USER_QUERY_ERROR.getMsg(), e);
             return BaseResult.error(CommonErrorCode.ERR_USER_QUERY_ERROR.getCode(),
                     CommonErrorCode.ERR_USER_QUERY_ERROR.getMsg());
@@ -179,23 +198,23 @@ public class UserController {
 
     @PostMapping("/login.do")
     @ApiOperation("登录接口")
-    public BaseResult<User> login(@RequestBody UserParam param){
+    public BaseResult<User> login(@RequestBody UserParam param) {
         try {
-            log.info(" login param is {}",JacksonUtil.toJSONString(param));
-            if (StringUtils.isEmpty(param.getUsername())||StringUtils.isEmpty(param.getPassword())){
+            log.info(" login param is {}", JacksonUtil.toJSONString(param));
+            if (StringUtils.isEmpty(param.getUsername()) || StringUtils.isEmpty(param.getPassword())) {
                 log.error(CommonErrorCode.ERR_USER_PARAM_NULL_ERROR.getMsg());
                 return BaseResult.error(CommonErrorCode.ERR_USER_PARAM_NULL_ERROR.getCode(),
                         CommonErrorCode.ERR_USER_PARAM_NULL_ERROR.getMsg());
             }
-            User user=userService.login(param);
-            if (user==null){
+            User user = userService.login(param);
+            if (user == null) {
                 log.error(CommonErrorCode.ERR_USER_NOT_EXIST_ERROR.getMsg());
                 return BaseResult.error(CommonErrorCode.ERR_USER_NOT_EXIST_ERROR.getCode(),
                         CommonErrorCode.ERR_USER_NOT_EXIST_ERROR.getMsg());
             }
             return BaseResult.success(user);
-        }catch (Exception e){
-            log.error(CommonErrorCode.ERR_LOGIN_ERROR.getMsg(),e);
+        } catch (Exception e) {
+            log.error(CommonErrorCode.ERR_LOGIN_ERROR.getMsg(), e);
             return BaseResult.error(CommonErrorCode.ERR_LOGIN_ERROR.getCode(),
                     CommonErrorCode.ERR_LOGIN_ERROR.getMsg());
         }
@@ -203,14 +222,33 @@ public class UserController {
 
     @PostMapping("/avatarUpload.do")
     @ApiOperation("上传用户头像")
-    public BaseResult<String> uploadUserAvatar(@RequestParam("file") MultipartFile file){
-        try{
-            String imgUrl=userService.upload(file);
+    public BaseResult<String> uploadUserAvatar(@RequestParam("file") MultipartFile file) {
+        try {
+            String imgUrl = userService.upload(file);
             return BaseResult.success(imgUrl);
-        }catch (Exception e){
-            log.error(CommonErrorCode.ERR_IMAGE_UPLOAD_ERROR.getMsg(),e);
+        } catch (Exception e) {
+            log.error(CommonErrorCode.ERR_IMAGE_UPLOAD_ERROR.getMsg(), e);
             return BaseResult.error(CommonErrorCode.ERR_IMAGE_UPLOAD_ERROR.getCode(),
                     CommonErrorCode.ERR_IMAGE_UPLOAD_ERROR.getMsg());
+        }
+    }
+
+    @GetMapping("/sendVerCodeMail.do")
+    @ApiOperation("发送验证码邮件")
+    public BaseResult sendVerCodeMail(@RequestParam String email, HttpSession session) {
+        try {
+            /*判断邮箱号是否为空*/
+            if (StringUtils.isEmpty(email)){
+                return BaseResult.error(CommonErrorCode.ERR_USER_PARAM_NULL_ERROR.getCode(),
+                        CommonErrorCode.ERR_USER_PARAM_NULL_ERROR.getMsg());
+            }
+            /*进行邮件发送*/
+            Boolean result=userService.sendVerCode(email,session);
+            return BaseResult.success(result);
+        } catch (Exception e) {
+            log.error(CommonErrorCode.ERR_MAIL_SEND_ERROR.getMsg(), e);
+            return BaseResult.error(CommonErrorCode.ERR_MAIL_SEND_ERROR.getCode(),
+                    CommonErrorCode.ERR_MAIL_SEND_ERROR.getMsg());
         }
     }
 }

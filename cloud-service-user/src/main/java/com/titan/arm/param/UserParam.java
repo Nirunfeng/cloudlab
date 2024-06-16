@@ -27,4 +27,10 @@ public class UserParam {
 
     @ApiModelProperty("头像图片")
     private String imgUrl;
+
+    @ApiModelProperty("邮箱")
+    private String email;
+
+    @ApiModelProperty("验证码")
+    private String verifyCode;
 }
