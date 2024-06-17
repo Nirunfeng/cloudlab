@@ -82,4 +82,11 @@ public interface UserDao {
      * @return
      */
     public int update(@Param("username") String username,@Param("password") String password);
+
+    /**
+     * 修改用户信息
+     * @param user
+     * @return
+     */
+    public int updateInformation(User user);
 }

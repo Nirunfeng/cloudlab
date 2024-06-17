@@ -32,7 +32,7 @@ public class User {
     @ApiModelProperty("头像url路径")
     private String imgUrl;
 
-    @ApiModelProperty("邮箱")
+    @ApiModelProperty("描述")
     private String description;
 
     @ApiModelProperty("学校代码")

@@ -51,4 +51,12 @@ public interface UserService {
      * @return
      */
     Boolean sendVerCode(String email, HttpSession session)  throws  Exception;
+
+    /**
+     * 修改用户信息
+     * @param param
+     * @param user
+     * @return
+     */
+    User updateInformation(UserParam param, User user);
 }

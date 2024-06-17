@@ -41,23 +41,23 @@ public class UserController {
 
     @PostMapping("/register.do")
     @ApiOperation("创建用户")
-    public BaseResult<Integer> create(@RequestBody UserParam param,HttpSession session) {
+    public BaseResult<Integer> create(@RequestBody UserParam param, HttpSession session) {
         try {
             log.info("user param is {}", JacksonUtil.toJSONString(param));
             /*判断验证码是否失效*/
             String email = (String) session.getAttribute("email");
             String verifyCode = (String) session.getAttribute("code");
-            if (StringUtils.isEmpty(email)||StringUtils.isEmpty(verifyCode)){
+            if (StringUtils.isEmpty(email) || StringUtils.isEmpty(verifyCode)) {
                 log.error(CommonErrorCode.ERR_MAIL_VERIFYCODE_UNUSED_ERROR.getMsg());
                 return BaseResult.error(CommonErrorCode.ERR_MAIL_VERIFYCODE_UNUSED_ERROR.getCode(),
                         CommonErrorCode.ERR_MAIL_VERIFYCODE_UNUSED_ERROR.getMsg());
             }
             /*比对验证码和邮箱*/
-            if (!email.equals(param.getUsername().trim())){
+            if (!email.equals(param.getUsername().trim())) {
                 return BaseResult.error(CommonErrorCode.ERR_MAIL_NOT_VERIFY_ERROR.getCode(),
                         CommonErrorCode.ERR_MAIL_NOT_VERIFY_ERROR.getMsg());
             }
-            if (!verifyCode.equals(param.getVerifyCode().trim())){
+            if (!verifyCode.equals(param.getVerifyCode().trim())) {
                 return BaseResult.error(CommonErrorCode.ERR_CODE_NOT_VERIFY_ERROR.getCode(),
                         CommonErrorCode.ERR_CODE_NOT_VERIFY_ERROR.getMsg());
             }
@@ -151,23 +151,23 @@ public class UserController {
 
     @PostMapping("/update.do")
     @ApiOperation("修改用户密码")
-    public BaseResult<Integer> update(@RequestBody UserParam param,HttpSession session) {
+    public BaseResult<Integer> update(@RequestBody UserParam param, HttpSession session) {
         try {
             log.info("update param is {}", JacksonUtil.toJSONString(param));
             /*判断验证码是否失效*/
             String email = (String) session.getAttribute("email");
             String verifyCode = (String) session.getAttribute("code");
-            if (StringUtils.isEmpty(email)||StringUtils.isEmpty(verifyCode)){
+            if (StringUtils.isEmpty(email) || StringUtils.isEmpty(verifyCode)) {
                 log.error(CommonErrorCode.ERR_MAIL_VERIFYCODE_UNUSED_ERROR.getMsg());
                 return BaseResult.error(CommonErrorCode.ERR_MAIL_VERIFYCODE_UNUSED_ERROR.getCode(),
                         CommonErrorCode.ERR_MAIL_VERIFYCODE_UNUSED_ERROR.getMsg());
             }
             /*比对验证码和邮箱*/
-            if (!email.equals(param.getUsername().trim())){
+            if (!email.equals(param.getUsername().trim())) {
                 return BaseResult.error(CommonErrorCode.ERR_MAIL_NOT_VERIFY_ERROR.getCode(),
                         CommonErrorCode.ERR_MAIL_NOT_VERIFY_ERROR.getMsg());
             }
-            if (!verifyCode.equals(param.getVerifyCode().trim())){
+            if (!verifyCode.equals(param.getVerifyCode().trim())) {
                 return BaseResult.error(CommonErrorCode.ERR_CODE_NOT_VERIFY_ERROR.getCode(),
                         CommonErrorCode.ERR_CODE_NOT_VERIFY_ERROR.getMsg());
             }
@@ -258,13 +258,38 @@ public class UserController {
     public BaseResult sendVerCodeMail(@RequestParam String email, HttpSession session) {
         try {
             /*判断邮箱号是否为空*/
-            if (StringUtils.isEmpty(email)){
+            if (StringUtils.isEmpty(email)) {
                 return BaseResult.error(CommonErrorCode.ERR_USER_PARAM_NULL_ERROR.getCode(),
                         CommonErrorCode.ERR_USER_PARAM_NULL_ERROR.getMsg());
             }
             /*进行邮件发送*/
-            Boolean result=userService.sendVerCode(email,session);
+            Boolean result = userService.sendVerCode(email, session);
             return BaseResult.success(result);
+        } catch (Exception e) {
+            log.error(CommonErrorCode.ERR_MAIL_SEND_ERROR.getMsg(), e);
+            return BaseResult.error(CommonErrorCode.ERR_MAIL_SEND_ERROR.getCode(),
+                    CommonErrorCode.ERR_MAIL_SEND_ERROR.getMsg());
+        }
+    }
+
+    @PostMapping("/updateInformation.do")
+    @ApiOperation("修改个人信息")
+    public BaseResult<User> updateInformation(@RequestBody UserParam param) {
+        try {
+            log.info(" update information param is {}",JacksonUtil.toJSONString(param));
+            /*先根据id查询user*/
+            if (null==param.getId()){
+                log.error(CommonErrorCode.ERR_USER_PARAM_NULL_ERROR.getMsg());
+                return BaseResult.error(CommonErrorCode.ERR_USER_PARAM_NULL_ERROR.getCode(),
+                        CommonErrorCode.ERR_USER_PARAM_NULL_ERROR.getMsg());
+            }
+            User user=userService.findUser(param.getId());
+            if (user==null){
+                return BaseResult.error(CommonErrorCode.ERR_USER_NOT_EXIST_ERROR.getCode(),
+                        CommonErrorCode.ERR_USER_NOT_EXIST_ERROR.getMsg());
+            }
+            user=userService.updateInformation(param,user);
+            return BaseResult.success(user);
         } catch (Exception e) {
             log.error(CommonErrorCode.ERR_MAIL_SEND_ERROR.getMsg(), e);
             return BaseResult.error(CommonErrorCode.ERR_MAIL_SEND_ERROR.getCode(),

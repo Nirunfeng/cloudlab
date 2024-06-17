@@ -3,11 +3,13 @@ package com.titan.arm.service.impl;
 import com.titan.arm.dao.UserDao;
 import com.titan.arm.entity.User;
 import com.titan.arm.file.FileUtil;
+import com.titan.arm.json.JacksonUtil;
 import com.titan.arm.md5.MD5Util;
 import com.titan.arm.param.UserParam;
 import com.titan.arm.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -165,6 +167,16 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
+    @Override
+    @Transactional
+    public User updateInformation(UserParam param, User user) {
+        /*字段copy*/
+        BeanUtils.copyProperties(param,user, JacksonUtil.getNullPropertyNames(param));
+        /*update*/
+        userDao.updateInformation(user);
+        return user;
+    }
+
     /**
      * 生成6位随机数
      * @return
@@ -177,4 +189,5 @@ public class UserServiceImpl implements UserService {
         }
         return str.toString();
     }
+
 }

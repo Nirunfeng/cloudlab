@@ -83,4 +83,32 @@
     <select id="login" resultMap="UserMap">
         select * from user where username=#{username} and password=#{password}
     </select>
+
+    <update id="updateInformation" parameterType="User">
+        update user
+        <set>
+            <if test="imgUrl!=null">
+                img_url=#{imgUrl}
+            </if>
+            <if test="description!=null">
+                description=#{description}
+            </if>
+            <if test="school!=null">
+                school=#{school}
+            </if>
+            <if test="major!=null">
+                major=#{major}
+            </if>
+            <if test="grade!=null">
+                grade=#{grade}
+            </if>
+            <if test="sex!=null">
+                sex=#{sex}
+            </if>
+            <if test="region!=null">
+                region=#{region}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
 </mapper>

@@ -19,7 +19,7 @@ public class UserParam {
     @ApiModelProperty("id")
     private Long id;
 
-    @ApiModelProperty("用户名（手机号)")
+    @ApiModelProperty("用户名（邮箱)")
     private String username;
 
     @ApiModelProperty("密码")
@@ -28,9 +28,24 @@ public class UserParam {
     @ApiModelProperty("头像图片")
     private String imgUrl;
 
-    @ApiModelProperty("邮箱")
-    private String email;
-
     @ApiModelProperty("验证码")
     private String verifyCode;
+
+    @ApiModelProperty("描述")
+    private String description;
+
+    @ApiModelProperty("学校代码")
+    private String school;
+
+    @ApiModelProperty("专业代码")
+    private String major;
+
+    @ApiModelProperty("年级代码")
+    private String grade;
+
+    @ApiModelProperty("性别代码")
+    private String sex;
+
+    @ApiModelProperty("地区代码")
+    private String region;
 }
