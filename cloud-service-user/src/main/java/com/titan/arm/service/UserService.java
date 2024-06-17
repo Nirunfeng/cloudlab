@@ -31,7 +31,7 @@ public interface UserService {
 
     public User queryOneByUsername(String username) throws Exception;
 
-    public Integer getCount(String username) throws Exception;
+    public Integer getCount(UserParam userParam) throws Exception;
 
     User findUser(Long id) throws Exception;
 
@@ -59,4 +59,6 @@ public interface UserService {
      * @return
      */
     User updateInformation(UserParam param, User user);
+
+    List<User> queryPage(UserParam data, Integer pageNo, Integer pageSize);
 }

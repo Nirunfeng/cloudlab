@@ -106,9 +106,9 @@ public class UserController {
             if (pageRequest.getPageNo() > 0) {
                 pageNo = pageRequest.getPageNo() - 1;
             }
-            List<User> userList = userService.queryByUsername(username, pageNo, pageRequest.getPageSize());
+            List<User> userList = userService.queryPage(pageRequest.getData(), pageNo, pageRequest.getPageSize());
             /*计算total*/
-            Integer total = userService.getCount(username);
+            Integer total = userService.getCount(pageRequest.getData());
             pageResponse.setPageNo(pageRequest.getPageNo());
             pageResponse.setPageSize(pageRequest.getPageSize());
             pageResponse.setTotal(total);

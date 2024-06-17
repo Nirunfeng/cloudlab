@@ -34,10 +34,10 @@ public interface UserDao {
 
     /**
      * 查询总数
-     * @param username
+     * @param user
      * @return
      */
-    public int count(@Param("username") String username);
+    public int count(User user);
 
     public User queryOneByUsername(String username);
 
@@ -89,4 +89,13 @@ public interface UserDao {
      * @return
      */
     public int updateInformation(User user);
+
+    /**
+     * 多条件分页查询
+     * @param user
+     * @param offset
+     * @param limit
+     * @return
+     */
+    List<User> query(User user, @Param("offset") int offset, @Param("limit") int limit);
 }

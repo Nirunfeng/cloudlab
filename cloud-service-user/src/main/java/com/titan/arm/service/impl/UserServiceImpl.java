@@ -16,10 +16,12 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -111,8 +113,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Integer getCount(String username) throws Exception {
-        return userDao.count(username);
+    public Integer getCount(UserParam userParam) throws Exception {
+        User user=new User();
+        BeanUtils.copyProperties(userParam,user);
+        return userDao.count(user);
     }
 
     @Override
@@ -175,6 +179,24 @@ public class UserServiceImpl implements UserService {
         /*update*/
         userDao.updateInformation(user);
         return user;
+    }
+
+    /**
+     * 分页查询
+     * @param data
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public List<User> queryPage(UserParam data, Integer pageNo, Integer pageSize) {
+        User user=new User();
+        BeanUtils.copyProperties(data,user);
+        List<User> userList=userDao.query(user,pageNo,pageSize);
+        if (CollectionUtils.isEmpty(userList)){
+            userList=new ArrayList<>();
+        }
+        return userList;
     }
 
     /**

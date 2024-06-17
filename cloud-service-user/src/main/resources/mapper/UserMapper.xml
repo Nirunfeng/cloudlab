@@ -36,6 +36,30 @@
         limit #{offset},#{limit}
     </select>
 
+    <select id="query" parameterType="User" resultMap="UserMap">
+        select * from user where 1=1
+            <if test="id!=null">
+                and id=#{id}
+            </if>
+            <if test="username!=null">
+                and username like CONCAT(CONCAT('%',#{username},'%'))
+            </if>
+            <if test="description!=null">
+                and description like CONCAT(CONCAT('%',#{description},'%'))
+            </if>
+            <if test="school!=null">
+                and school like CONCAT(CONCAT('%',#{school},'%'))
+            </if>
+            <if test="major!=null">
+                and major like CONCAT(CONCAT('%',#{major},'%'))
+            </if>
+            <if test="grade!=null">
+                and grade like CONCAT(CONCAT('%',#{grade},'%'))
+            </if>
+        order by id desc
+        limit #{offset},#{limit}
+    </select>
+
     <!--查询全部-->
     <select id="findAllUser"  resultMap="UserMap">
         select * from user
@@ -68,11 +92,26 @@
         where username=#{username}
     </update>
 
-    <select id="count" resultType="java.lang.Integer">
+    <select id="count" parameterType="User" resultType="java.lang.Integer">
         select count(*) from user
         where 1=1
+        <if test="id!=null">
+            and id=#{id}
+        </if>
         <if test="username!=null">
             and username like CONCAT(CONCAT('%',#{username},'%'))
+        </if>
+        <if test="description!=null">
+            and description like CONCAT(CONCAT('%',#{description},'%'))
+        </if>
+        <if test="school!=null">
+            and school like CONCAT(CONCAT('%',#{school},'%'))
+        </if>
+        <if test="major!=null">
+            and major like CONCAT(CONCAT('%',#{major},'%'))
+        </if>
+        <if test="grade!=null">
+            and grade like CONCAT(CONCAT('%',#{grade},'%'))
         </if>
     </select>
 
