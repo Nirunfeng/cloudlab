@@ -3,6 +3,7 @@ package com.titan.arm.controller;
 import com.titan.arm.entity.User;
 import com.titan.arm.error.CommonErrorCode;
 import com.titan.arm.json.JacksonUtil;
+import com.titan.arm.md5.MD5Util;
 import com.titan.arm.param.UserParam;
 import com.titan.arm.request.PageRequest;
 import com.titan.arm.response.BaseResult;
@@ -52,7 +53,7 @@ public class UserController {
                         CommonErrorCode.ERR_MAIL_VERIFYCODE_UNUSED_ERROR.getMsg());
             }
             /*比对验证码和邮箱*/
-            if (!email.equals(param.getEmail().trim())){
+            if (!email.equals(param.getUsername().trim())){
                 return BaseResult.error(CommonErrorCode.ERR_MAIL_NOT_VERIFY_ERROR.getCode(),
                         CommonErrorCode.ERR_MAIL_NOT_VERIFY_ERROR.getMsg());
             }
@@ -70,6 +71,8 @@ public class UserController {
                 }
                 user = new User();
                 BeanUtils.copyProperties(param, user);
+                //对密码进行加密
+                user.setPassword(MD5Util.inputPassToFormPass(param.getPassword()));
                 int result = userService.insert(user);
                 return BaseResult.success(result);
             } else {
@@ -148,9 +151,26 @@ public class UserController {
 
     @PostMapping("/update.do")
     @ApiOperation("修改用户密码")
-    public BaseResult<Integer> update(@RequestBody UserParam param) {
+    public BaseResult<Integer> update(@RequestBody UserParam param,HttpSession session) {
         try {
             log.info("update param is {}", JacksonUtil.toJSONString(param));
+            /*判断验证码是否失效*/
+            String email = (String) session.getAttribute("email");
+            String verifyCode = (String) session.getAttribute("code");
+            if (StringUtils.isEmpty(email)||StringUtils.isEmpty(verifyCode)){
+                log.error(CommonErrorCode.ERR_MAIL_VERIFYCODE_UNUSED_ERROR.getMsg());
+                return BaseResult.error(CommonErrorCode.ERR_MAIL_VERIFYCODE_UNUSED_ERROR.getCode(),
+                        CommonErrorCode.ERR_MAIL_VERIFYCODE_UNUSED_ERROR.getMsg());
+            }
+            /*比对验证码和邮箱*/
+            if (!email.equals(param.getUsername().trim())){
+                return BaseResult.error(CommonErrorCode.ERR_MAIL_NOT_VERIFY_ERROR.getCode(),
+                        CommonErrorCode.ERR_MAIL_NOT_VERIFY_ERROR.getMsg());
+            }
+            if (!verifyCode.equals(param.getVerifyCode().trim())){
+                return BaseResult.error(CommonErrorCode.ERR_CODE_NOT_VERIFY_ERROR.getCode(),
+                        CommonErrorCode.ERR_CODE_NOT_VERIFY_ERROR.getMsg());
+            }
             /*校验username和password*/
             if (StringUtils.isEmpty(param.getUsername()) || StringUtils.isEmpty(param.getPassword())) {
                 log.error(CommonErrorCode.ERR_USER_PARAM_NULL_ERROR.getMsg());
@@ -159,7 +179,7 @@ public class UserController {
             }
             /*现根据username查询一遍，判断密码是否重复*/
             User user = userService.queryOneByUsername(param.getUsername());
-            if (user != null && user.getPassword().equals(param.getPassword())) {
+            if (user != null && user.getPassword().equals(MD5Util.inputPassToFormPass(param.getPassword()))) {
                 log.error(CommonErrorCode.ERR_PASSWORD_REPEAT_ERROR.getMsg());
                 return BaseResult.error(CommonErrorCode.ERR_PASSWORD_REPEAT_ERROR.getCode(),
                         CommonErrorCode.ERR_PASSWORD_REPEAT_ERROR.getMsg());

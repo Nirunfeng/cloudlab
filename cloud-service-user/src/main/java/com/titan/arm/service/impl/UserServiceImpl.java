@@ -3,6 +3,7 @@ package com.titan.arm.service.impl;
 import com.titan.arm.dao.UserDao;
 import com.titan.arm.entity.User;
 import com.titan.arm.file.FileUtil;
+import com.titan.arm.md5.MD5Util;
 import com.titan.arm.param.UserParam;
 import com.titan.arm.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -94,7 +95,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public int update(String username, String password) {
-        return userDao.update(username, password);
+        //对密码进行加密
+        return userDao.update(username, MD5Util.inputPassToFormPass(password));
     }
 
     @Override
@@ -120,7 +122,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User login(UserParam param) throws Exception {
-        User user = userDao.login(param.getUsername(), param.getPassword());
+        //对密码进行加密
+        User user = userDao.login(param.getUsername(), MD5Util.inputPassToFormPass(param.getPassword()));
         return user;
     }
 

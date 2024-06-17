@@ -8,12 +8,17 @@
         <result property="username" column="username" jdbcType="VARCHAR"/>
         <result property="password" column="password" jdbcType="VARCHAR"/>
         <result property="imgUrl" column="img_url" jdbcType="LONGVARCHAR"/>
-        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="school" column="school" jdbcType="VARCHAR"/>
+        <result property="major" column="major" jdbcType="VARCHAR"/>
+        <result property="grade" column="grade" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="VARCHAR"/>
+        <result property="region" column="region" jdbcType="VARCHAR"/>
     </resultMap>
     
     <!--插入一条-->
     <insert id="insert" parameterType="User" useGeneratedKeys="true" keyProperty="id">
-        insert into user(username,password,img_url,email) values (#{username},#{password},#{imgUrl},#{email})
+        insert into user(username,password,img_url) values (#{username},#{password},#{imgUrl})
     </insert>
 
     <!--根据username精确查询-->

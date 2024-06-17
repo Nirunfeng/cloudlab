@@ -23,7 +23,7 @@ public class User {
     @ApiModelProperty("id")
     private Long id;
 
-    @ApiModelProperty("手机号username")
+    @ApiModelProperty("邮箱")
     private String username;
 
     @ApiModelProperty("密码")
@@ -33,5 +33,20 @@ public class User {
     private String imgUrl;
 
     @ApiModelProperty("邮箱")
-    private String email;
+    private String description;
+
+    @ApiModelProperty("学校代码")
+    private String school;
+
+    @ApiModelProperty("专业代码")
+    private String major;
+
+    @ApiModelProperty("年级代码")
+    private String grade;
+
+    @ApiModelProperty("性别代码")
+    private String sex;
+
+    @ApiModelProperty("地区代码")
+    private String region;
 }
