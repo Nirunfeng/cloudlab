@@ -257,6 +257,7 @@ public class UserController {
     @ApiOperation("发送验证码邮件")
     public BaseResult sendVerCodeMail(@RequestParam String email, HttpSession session) {
         try {
+            log.info(email);
             /*判断邮箱号是否为空*/
             if (StringUtils.isEmpty(email)) {
                 return BaseResult.error(CommonErrorCode.ERR_USER_PARAM_NULL_ERROR.getCode(),
