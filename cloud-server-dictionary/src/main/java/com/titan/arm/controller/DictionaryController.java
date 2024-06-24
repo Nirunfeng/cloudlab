@@ -1,9 +1,18 @@
 package com.titan.arm.controller;
 
+import com.titan.arm.entity.School;
+import com.titan.arm.error.CommonErrorCode;
+import com.titan.arm.response.BaseResult;
+import com.titan.arm.service.DictionaryService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * \* Created with IntelliJ IDEA.
@@ -19,5 +28,20 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class DictionaryController {
 
+    @Autowired
+    private DictionaryService dictionaryService;
 
+    @GetMapping("/pageSchool.do")
+    @ApiOperation("查询所有学校字典")
+    public BaseResult<List<School>> pageQuery() {
+        try {
+            List<School> schoolList=dictionaryService.queryPage();
+            return BaseResult.success(schoolList);
+        } catch (Exception e) {
+            log.error(CommonErrorCode.ERR_SCHOOL_DIC_ERROR.getCode(),
+                    CommonErrorCode.ERR_SCHOOL_DIC_ERROR.getMsg(),e);
+            return BaseResult.error(CommonErrorCode.ERR_SCHOOL_DIC_ERROR.getCode(),
+                    CommonErrorCode.ERR_SCHOOL_DIC_ERROR.getMsg());
+        }
+    }
 }

@@ -4,6 +4,7 @@ import com.titan.arm.dao.SchoolDao;
 import com.titan.arm.entity.School;
 import com.titan.arm.error.CommonErrorCode;
 import com.titan.arm.json.JacksonUtil;
+import com.titan.arm.pinyin.PinyinUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
@@ -68,10 +69,11 @@ public class SchoolSpiderTask {
                     if (element.text().startsWith("1")) {
                         School school = new School();
                         /*截取学校代码*/
-                        String code = element.text().substring(0, 5);
-                        String name = element.text().substring(5, element.text().length());
+                        String code = element.text().substring(0, 5).trim();
+                        String name = element.text().substring(5, element.text().length()).trim();
                         school.setCode(code);
                         school.setName(name);
+                        school.setLetter(PinyinUtil.getFirstPinyinInitial(school.getName()));
                         schoolList.add(school);
                     }
                 }
@@ -85,6 +87,8 @@ public class SchoolSpiderTask {
         SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, false);
         SchoolDao schoolDaoBatch = sqlSession.getMapper(SchoolDao.class);
         schoolList.stream().forEach(school -> schoolDaoBatch.insert(school));
+        sqlSession.commit();
+        sqlSession.clearCache();
         long end = System.currentTimeMillis();
         log.info("爬虫耗时：{} ms", end - start);
     }

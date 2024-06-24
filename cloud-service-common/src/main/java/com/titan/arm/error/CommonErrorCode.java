@@ -32,8 +32,9 @@ public enum CommonErrorCode {
     ERR_MAIL_NOT_VERIFY_ERROR("0x100023","邮箱不正确，请重新获取验证码"),
     ERR_CODE_NOT_VERIFY_ERROR("0x100024","验证码不正确，请重新获取验证码"),
 
-    /*31-40 爬虫业务错误码*/
+    /*31-40 爬虫/字典业务错误码*/
     ERR_SPIDER_TASK_ERROR("0x100031","爬虫任务执行失败"),
+    ERR_SCHOOL_DIC_ERROR("0x100032","学校字典查询失败"),
     ;
     private String code;
 

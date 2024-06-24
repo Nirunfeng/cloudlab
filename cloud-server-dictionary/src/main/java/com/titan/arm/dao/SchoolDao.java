@@ -3,6 +3,8 @@ package com.titan.arm.dao;
 import com.titan.arm.entity.School;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * \* Created with IntelliJ IDEA.
  * \* User: nirunfeng
@@ -20,4 +22,6 @@ public interface SchoolDao {
     void insert(School school);
 
     void deleteAll();
+
+    List<School> findAll();
 }

@@ -20,10 +20,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * TODO
@@ -191,7 +188,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> queryPage(UserParam data, Integer pageNo, Integer pageSize) {
         User user=new User();
-        BeanUtils.copyProperties(data,user);
+        if (!Objects.isNull(data)) {
+            BeanUtils.copyProperties(data, user);
+        }
         List<User> userList=userDao.query(user,pageNo,pageSize);
         if (CollectionUtils.isEmpty(userList)){
             userList=new ArrayList<>();

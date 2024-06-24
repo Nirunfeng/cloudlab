@@ -1,13 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.titan.arm.dao.SchoolDao">
+    <!--    开启二级缓存,这样对所有select操作都会作缓存处理-->
+    <cache/>
+    <!--    开启二级缓存,这样对所有select操作都会作缓存处理-->
+
+    <!--返回结果-->
+    <resultMap id="SchoolMap" type="com.titan.arm.entity.School">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+        <result property="code" column="code" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="letter" column="letter" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="findAll" resultMap="SchoolMap">
+        select *
+        from school
+        order by letter asc
+    </select>
+
     <!--插入方法-->
     <insert id="insert" parameterType="com.titan.arm.entity.School">
-        INSERT INTO school (code, name) VALUES (#{code},#{name})
+        INSERT INTO school (code, name, letter)
+        VALUES (#{code}, #{name}, #{letter})
     </insert>
 
     <!--删除全部-->
     <delete id="deleteAll">
-        delete * from school
+        delete
+        from school
     </delete>
 </mapper>

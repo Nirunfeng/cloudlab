@@ -30,4 +30,7 @@ public class School implements Serializable {
 
     @ApiModelProperty("学校名称")
     private String name;
+
+    @ApiModelProperty("首字母")
+    private String letter;
 }
