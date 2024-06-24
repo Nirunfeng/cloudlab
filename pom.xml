@@ -12,6 +12,7 @@
         <module>cloud-service-user</module>
         <module>cloud-service-common</module>
         <module>cloud-service-tool</module>
+        <module>cloud-server-dictionary</module>
     </modules>
     <packaging>pom</packaging>
     <description>暂时还没想好</description>

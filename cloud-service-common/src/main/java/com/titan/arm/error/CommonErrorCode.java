@@ -16,7 +16,7 @@ public enum CommonErrorCode {
 
 
 
-    /*11-20 用户业务错误码*/
+    /*11-30 用户业务错误码*/
     ERR_USER_NAME_REPEAT_ERROR("0x100011","用户名重复，无法添加"),
     ERR_USER_PARAM_NULL_ERROR("0x100012","参数为空"),
     ERR_INSERT_USER_ERROR("0x100013","用户添加失败"),
@@ -31,6 +31,9 @@ public enum CommonErrorCode {
     ERR_MAIL_VERIFYCODE_UNUSED_ERROR("0x100022","验证码过期，请重新获取验证码"),
     ERR_MAIL_NOT_VERIFY_ERROR("0x100023","邮箱不正确，请重新获取验证码"),
     ERR_CODE_NOT_VERIFY_ERROR("0x100024","验证码不正确，请重新获取验证码"),
+
+    /*31-40 爬虫业务错误码*/
+    ERR_SPIDER_TASK_ERROR("0x100031","爬虫任务执行失败"),
     ;
     private String code;
 
