@@ -18,6 +18,15 @@
         order by letter asc
     </select>
 
+    <select id="query" parameterType="java.lang.String" resultMap="SchoolMap">
+        select *
+        from school where 1=1
+        <if test="name!=null">
+            and name like CONCAT(CONCAT('%',#{name},'%'))
+        </if>
+        order by letter asc
+    </select>
+
     <!--插入方法-->
     <insert id="insert" parameterType="com.titan.arm.entity.School">
         INSERT INTO school (code, name, letter)

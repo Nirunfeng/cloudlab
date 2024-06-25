@@ -1,6 +1,6 @@
 package com.titan.arm.service;
 
-import com.titan.arm.entity.School;
+import com.titan.arm.vo.SchoolDictVO;
 
 import java.util.List;
 
@@ -16,9 +16,10 @@ public interface DictionaryService {
 
     /**
      * 查询全部学校
+     *
      * @return
      */
-    List<School>  queryPage() throws Exception;
+    List<SchoolDictVO> queryPage(String name) throws Exception;
 
     String querySchoolByCode(String code) throws Exception;
 }

@@ -2,6 +2,7 @@ package com.titan.arm.dao;
 
 import com.titan.arm.entity.School;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -24,4 +25,6 @@ public interface SchoolDao {
     void deleteAll();
 
     List<School> findAll();
+
+    List<School> query(@Param("name") String name);
 }

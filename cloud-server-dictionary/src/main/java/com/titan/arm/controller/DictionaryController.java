@@ -4,6 +4,7 @@ import com.titan.arm.entity.School;
 import com.titan.arm.error.CommonErrorCode;
 import com.titan.arm.response.BaseResult;
 import com.titan.arm.service.DictionaryService;
+import com.titan.arm.vo.SchoolDictVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -34,10 +35,10 @@ public class DictionaryController {
 
     @GetMapping("/pageSchool.do")
     @ApiOperation("查询所有学校字典")
-    public BaseResult<List<School>> pageQuery() {
+    public BaseResult<List<SchoolDictVO>> pageQuery(@RequestParam(required = false) String name) {
         try {
-            List<School> schoolList=dictionaryService.queryPage();
-            return BaseResult.success(schoolList);
+            List<SchoolDictVO> schoolDictVOS=dictionaryService.queryPage(name);
+            return BaseResult.success(schoolDictVOS);
         } catch (Exception e) {
             log.error(CommonErrorCode.ERR_SCHOOL_DIC_ERROR.getCode(),
                     CommonErrorCode.ERR_SCHOOL_DIC_ERROR.getMsg(),e);
@@ -45,6 +46,7 @@ public class DictionaryController {
                     CommonErrorCode.ERR_SCHOOL_DIC_ERROR.getMsg());
         }
     }
+
 
     @GetMapping("/querySchoolByCode.do")
     @ApiOperation("根据code值查询学校名称")
