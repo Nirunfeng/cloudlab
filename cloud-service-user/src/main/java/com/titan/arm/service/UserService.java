@@ -2,6 +2,7 @@ package com.titan.arm.service;
 
 import com.titan.arm.entity.User;
 import com.titan.arm.param.UserParam;
+import com.titan.arm.vo.UserVO;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
@@ -33,7 +34,7 @@ public interface UserService {
 
     public Integer getCount(UserParam userParam) throws Exception;
 
-    User findUser(Long id) throws Exception;
+    UserVO findUser(Long id) throws Exception;
 
     User login(UserParam param) throws Exception;
 
@@ -54,11 +55,12 @@ public interface UserService {
 
     /**
      * 修改用户信息
+     *
      * @param param
      * @param user
      * @return
      */
-    User updateInformation(UserParam param, User user);
+    UserVO updateInformation(UserParam param, User user);
 
-    List<User> queryPage(UserParam data, Integer pageNo, Integer pageSize);
+    List<UserVO> queryPage(UserParam data, Integer pageNo, Integer pageSize);
 }

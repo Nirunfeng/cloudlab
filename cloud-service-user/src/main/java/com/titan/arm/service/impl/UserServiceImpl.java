@@ -7,6 +7,7 @@ import com.titan.arm.json.JacksonUtil;
 import com.titan.arm.md5.MD5Util;
 import com.titan.arm.param.UserParam;
 import com.titan.arm.service.UserService;
+import com.titan.arm.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -17,6 +18,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
@@ -36,6 +38,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     /**
      * 邮件发送服务
@@ -117,10 +122,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUser(Long id) throws Exception {
-        User user = new User();
-        user = userDao.findUserById(id);
-        return user;
+    public UserVO findUser(Long id) throws Exception {
+        UserVO userVO = new UserVO();
+        User user = userDao.findUserById(id);
+        BeanUtils.copyProperties(user,userVO);
+        return userVO;
     }
 
     @Override
@@ -170,32 +176,42 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User updateInformation(UserParam param, User user) {
+    public UserVO updateInformation(UserParam param, User user) {
+        UserVO userVO=new UserVO();
         /*字段copy*/
         BeanUtils.copyProperties(param,user, JacksonUtil.getNullPropertyNames(param));
         /*update*/
         userDao.updateInformation(user);
-        return user;
+        BeanUtils.copyProperties(user,userVO);
+        return userVO;
     }
 
     /**
      * 分页查询
+     *
      * @param data
      * @param pageNo
      * @param pageSize
      * @return
      */
     @Override
-    public List<User> queryPage(UserParam data, Integer pageNo, Integer pageSize) {
+    public List<UserVO> queryPage(UserParam data, Integer pageNo, Integer pageSize) {
+        List<UserVO> result=new ArrayList<>();
         User user=new User();
         if (!Objects.isNull(data)) {
             BeanUtils.copyProperties(data, user);
         }
         List<User> userList=userDao.query(user,pageNo,pageSize);
-        if (CollectionUtils.isEmpty(userList)){
-            userList=new ArrayList<>();
+        if (!CollectionUtils.isEmpty(userList)){
+            /*查询字典*/
+
+            for (User user1:userList){
+                UserVO userVO=new UserVO();
+                BeanUtils.copyProperties(user1,userVO);
+                result.add(userVO);
+            }
         }
-        return userList;
+        return result;
     }
 
     /**

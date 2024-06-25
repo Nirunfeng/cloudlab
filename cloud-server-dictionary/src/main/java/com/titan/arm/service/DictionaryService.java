@@ -19,4 +19,6 @@ public interface DictionaryService {
      * @return
      */
     List<School>  queryPage() throws Exception;
+
+    String querySchoolByCode(String code) throws Exception;
 }

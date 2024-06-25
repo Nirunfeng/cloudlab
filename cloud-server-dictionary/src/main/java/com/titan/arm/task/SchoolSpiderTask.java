@@ -1,5 +1,6 @@
 package com.titan.arm.task;
 
+import com.titan.arm.constant.Constant;
 import com.titan.arm.dao.SchoolDao;
 import com.titan.arm.entity.School;
 import com.titan.arm.error.CommonErrorCode;
@@ -75,6 +76,7 @@ public class SchoolSpiderTask {
                         school.setName(name);
                         school.setLetter(PinyinUtil.getFirstPinyinInitial(school.getName()));
                         schoolList.add(school);
+                        Constant.schoolDicMap.put(code,name);
                     }
                 }
             }

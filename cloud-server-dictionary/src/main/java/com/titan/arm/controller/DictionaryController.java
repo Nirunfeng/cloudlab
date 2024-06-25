@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -38,6 +39,20 @@ public class DictionaryController {
             List<School> schoolList=dictionaryService.queryPage();
             return BaseResult.success(schoolList);
         } catch (Exception e) {
+            log.error(CommonErrorCode.ERR_SCHOOL_DIC_ERROR.getCode(),
+                    CommonErrorCode.ERR_SCHOOL_DIC_ERROR.getMsg(),e);
+            return BaseResult.error(CommonErrorCode.ERR_SCHOOL_DIC_ERROR.getCode(),
+                    CommonErrorCode.ERR_SCHOOL_DIC_ERROR.getMsg());
+        }
+    }
+
+    @GetMapping("/querySchoolByCode.do")
+    @ApiOperation("根据code值查询学校名称")
+    public BaseResult<String> querySchoolByCode(@RequestParam String code){
+        try {
+            String name=dictionaryService.querySchoolByCode(code);
+            return BaseResult.success(name);
+        }catch (Exception e){
             log.error(CommonErrorCode.ERR_SCHOOL_DIC_ERROR.getCode(),
                     CommonErrorCode.ERR_SCHOOL_DIC_ERROR.getMsg(),e);
             return BaseResult.error(CommonErrorCode.ERR_SCHOOL_DIC_ERROR.getCode(),

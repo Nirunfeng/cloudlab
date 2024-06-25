@@ -1,5 +1,6 @@
 package com.titan.arm.service.impl;
 
+import com.titan.arm.constant.Constant;
 import com.titan.arm.dao.SchoolDao;
 import com.titan.arm.entity.School;
 import com.titan.arm.service.DictionaryService;
@@ -27,5 +28,10 @@ public class DictionaryServiceImpl implements DictionaryService {
     @Override
     public List<School> queryPage() throws Exception {
         return schoolDao.findAll();
+    }
+
+    @Override
+    public String querySchoolByCode(String code) throws Exception{
+        return Constant.schoolDicMap.get(code);
     }
 }

@@ -9,6 +9,7 @@ import com.titan.arm.request.PageRequest;
 import com.titan.arm.response.BaseResult;
 import com.titan.arm.response.PageResponse;
 import com.titan.arm.service.UserService;
+import com.titan.arm.vo.UserVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -93,20 +94,16 @@ public class UserController {
      */
     @PostMapping("/query.do")
     @ApiOperation("分页查询用户")
-    public BaseResult<PageResponse<User>> query(@RequestBody PageRequest<UserParam> pageRequest) {
-        PageResponse<User> pageResponse = new PageResponse<>();
+    public BaseResult<PageResponse<UserVO>> query(@RequestBody PageRequest<UserParam> pageRequest) {
+        PageResponse<UserVO> pageResponse = new PageResponse<>();
         try {
             log.info("pageRequest is {}", JacksonUtil.toJSONString(pageRequest));
-            String username = null;
-            if (!Objects.isNull(pageRequest.getData()) && StringUtils.isNotEmpty(pageRequest.getData().getUsername())) {
-                username = pageRequest.getData().getUsername();
-            }
             /*计算页码*/
             Integer pageNo = 0;
             if (pageRequest.getPageNo() > 0) {
                 pageNo = pageRequest.getPageNo() - 1;
             }
-            List<User> userList = userService.queryPage(pageRequest.getData(), pageNo, pageRequest.getPageSize());
+            List<UserVO> userList = userService.queryPage(pageRequest.getData(), pageNo, pageRequest.getPageSize());
             /*计算total*/
             Integer total = userService.getCount(pageRequest.getData());
             pageResponse.setPageNo(pageRequest.getPageNo());
@@ -200,15 +197,15 @@ public class UserController {
      */
     @GetMapping("/queryById.do")
     @ApiOperation("根据id查询用户信息")
-    public BaseResult<User> queryById(@RequestParam Long id) {
+    public BaseResult<UserVO> queryById(@RequestParam Long id) {
         try {
             log.info(" quer id is : {}", id);
             if (null == id) {
                 log.error("id为空，无法查询");
                 return BaseResult.error("-1", "id为空，无法查询");
             }
-            User user = userService.findUser(id);
-            return BaseResult.success(user);
+            UserVO userVO = userService.findUser(id);
+            return BaseResult.success(userVO);
         } catch (Exception e) {
             log.error(CommonErrorCode.ERR_USER_QUERY_ERROR.getMsg(), e);
             return BaseResult.error(CommonErrorCode.ERR_USER_QUERY_ERROR.getCode(),
@@ -218,7 +215,7 @@ public class UserController {
 
     @PostMapping("/login.do")
     @ApiOperation("登录接口")
-    public BaseResult<User> login(@RequestBody UserParam param) {
+    public BaseResult<UserVO> login(@RequestBody UserParam param) {
         try {
             log.info(" login param is {}", JacksonUtil.toJSONString(param));
             if (StringUtils.isEmpty(param.getUsername()) || StringUtils.isEmpty(param.getPassword())) {
@@ -232,7 +229,9 @@ public class UserController {
                 return BaseResult.error(CommonErrorCode.ERR_USER_NOT_EXIST_ERROR.getCode(),
                         CommonErrorCode.ERR_USER_NOT_EXIST_ERROR.getMsg());
             }
-            return BaseResult.success(user);
+            UserVO userVO=new UserVO();
+            BeanUtils.copyProperties(user,userVO);
+            return BaseResult.success(userVO);
         } catch (Exception e) {
             log.error(CommonErrorCode.ERR_LOGIN_ERROR.getMsg(), e);
             return BaseResult.error(CommonErrorCode.ERR_LOGIN_ERROR.getCode(),
@@ -275,7 +274,7 @@ public class UserController {
 
     @PostMapping("/updateInformation.do")
     @ApiOperation("修改个人信息")
-    public BaseResult<User> updateInformation(@RequestBody UserParam param) {
+    public BaseResult<UserVO> updateInformation(@RequestBody UserParam param) {
         try {
             log.info(" update information param is {}",JacksonUtil.toJSONString(param));
             /*先根据id查询user*/
@@ -284,13 +283,15 @@ public class UserController {
                 return BaseResult.error(CommonErrorCode.ERR_USER_PARAM_NULL_ERROR.getCode(),
                         CommonErrorCode.ERR_USER_PARAM_NULL_ERROR.getMsg());
             }
-            User user=userService.findUser(param.getId());
-            if (user==null){
+            UserVO userVO=userService.findUser(param.getId());
+            if (userVO==null){
                 return BaseResult.error(CommonErrorCode.ERR_USER_NOT_EXIST_ERROR.getCode(),
                         CommonErrorCode.ERR_USER_NOT_EXIST_ERROR.getMsg());
             }
-            user=userService.updateInformation(param,user);
-            return BaseResult.success(user);
+            User user=new User();
+            BeanUtils.copyProperties(userVO,user);
+            userVO=userService.updateInformation(param,user);
+            return BaseResult.success(userVO);
         } catch (Exception e) {
             log.error(CommonErrorCode.ERR_MAIL_SEND_ERROR.getMsg(), e);
             return BaseResult.error(CommonErrorCode.ERR_MAIL_SEND_ERROR.getCode(),
