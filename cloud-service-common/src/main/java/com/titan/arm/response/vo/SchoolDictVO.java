@@ -1,6 +1,5 @@
-package com.titan.arm.vo;
+package com.titan.arm.response.vo;
 
-import com.titan.arm.entity.School;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

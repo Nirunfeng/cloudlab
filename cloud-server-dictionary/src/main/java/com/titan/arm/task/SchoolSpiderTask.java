@@ -2,9 +2,8 @@ package com.titan.arm.task;
 
 import com.titan.arm.constant.Constant;
 import com.titan.arm.dao.SchoolDao;
-import com.titan.arm.entity.School;
+import com.titan.arm.response.vo.School;
 import com.titan.arm.error.CommonErrorCode;
-import com.titan.arm.json.JacksonUtil;
 import com.titan.arm.pinyin.PinyinUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.ExecutorType;

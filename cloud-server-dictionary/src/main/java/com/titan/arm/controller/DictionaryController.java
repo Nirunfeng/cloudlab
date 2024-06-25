@@ -1,10 +1,9 @@
 package com.titan.arm.controller;
 
-import com.titan.arm.entity.School;
 import com.titan.arm.error.CommonErrorCode;
 import com.titan.arm.response.BaseResult;
 import com.titan.arm.service.DictionaryService;
-import com.titan.arm.vo.SchoolDictVO;
+import com.titan.arm.response.vo.SchoolDictVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;

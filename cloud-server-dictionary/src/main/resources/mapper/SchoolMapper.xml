@@ -6,7 +6,7 @@
     <!--    开启二级缓存,这样对所有select操作都会作缓存处理-->
 
     <!--返回结果-->
-    <resultMap id="SchoolMap" type="com.titan.arm.entity.School">
+    <resultMap id="SchoolMap" type="com.titan.arm.response.vo.School">
         <result property="id" column="id" jdbcType="BIGINT"/>
         <result property="code" column="code" jdbcType="VARCHAR"/>
         <result property="name" column="name" jdbcType="VARCHAR"/>
@@ -28,7 +28,7 @@
     </select>
 
     <!--插入方法-->
-    <insert id="insert" parameterType="com.titan.arm.entity.School">
+    <insert id="insert" parameterType="com.titan.arm.response.vo.School">
         INSERT INTO school (code, name, letter)
         VALUES (#{code}, #{name}, #{letter})
     </insert>

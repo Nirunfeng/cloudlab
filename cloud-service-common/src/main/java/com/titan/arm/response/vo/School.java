@@ -1,4 +1,4 @@
-package com.titan.arm.entity;
+package com.titan.arm.response.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

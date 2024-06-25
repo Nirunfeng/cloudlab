@@ -2,10 +2,13 @@ package com.titan.arm.service.impl;
 
 import com.titan.arm.dao.UserDao;
 import com.titan.arm.entity.User;
+import com.titan.arm.fegin.DictionaryServiceClient;
 import com.titan.arm.file.FileUtil;
 import com.titan.arm.json.JacksonUtil;
 import com.titan.arm.md5.MD5Util;
 import com.titan.arm.param.UserParam;
+import com.titan.arm.response.BaseResult;
+import com.titan.arm.response.vo.SchoolDictVO;
 import com.titan.arm.service.UserService;
 import com.titan.arm.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +21,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
@@ -40,7 +42,7 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     @Autowired
-    private RestTemplate restTemplate;
+    private DictionaryServiceClient dictionaryServiceClient;
 
     /**
      * 邮件发送服务

@@ -1,6 +1,6 @@
 package com.titan.arm.service;
 
-import com.titan.arm.vo.SchoolDictVO;
+import com.titan.arm.response.vo.SchoolDictVO;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package com.titan.arm.dao;
 
-import com.titan.arm.entity.School;
+import com.titan.arm.response.vo.School;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

@@ -2,12 +2,14 @@ package com.titan.arm.controller;
 
 import com.titan.arm.entity.User;
 import com.titan.arm.error.CommonErrorCode;
+import com.titan.arm.fegin.DictionaryServiceClient;
 import com.titan.arm.json.JacksonUtil;
 import com.titan.arm.md5.MD5Util;
 import com.titan.arm.param.UserParam;
 import com.titan.arm.request.PageRequest;
 import com.titan.arm.response.BaseResult;
 import com.titan.arm.response.PageResponse;
+import com.titan.arm.response.vo.SchoolDictVO;
 import com.titan.arm.service.UserService;
 import com.titan.arm.vo.UserVO;
 import io.swagger.annotations.Api;
@@ -39,6 +41,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private DictionaryServiceClient dictionaryServiceClient;
 
     @PostMapping("/register.do")
     @ApiOperation("创建用户")
@@ -98,6 +103,7 @@ public class UserController {
         PageResponse<UserVO> pageResponse = new PageResponse<>();
         try {
             log.info("pageRequest is {}", JacksonUtil.toJSONString(pageRequest));
+            BaseResult<List<SchoolDictVO>> schoolDicts=dictionaryServiceClient.pageQuery("");
             /*计算页码*/
             Integer pageNo = 0;
             if (pageRequest.getPageNo() > 0) {
