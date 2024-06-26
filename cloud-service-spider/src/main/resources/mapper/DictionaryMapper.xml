@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.titan.arm.dao.DictionaryDao">
+    <!--插入方法-->
+    <insert id="insert" parameterType="com.titan.arm.entity.Dictionary">
+        INSERT INTO dictionary (id,type,type_key,type_value,bz)
+        VALUES (#{id}, #{type}, #{typeKey},#{typeValue},#{bz})
+    </insert>
+
+    <!--根据type删除字典-->
+    <delete id="delete" parameterType="java.lang.String">
+        delete
+        from dictionary
+        where 1 = 1
+          and type = #{type}
+    </delete>
+</mapper>

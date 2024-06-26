@@ -1,10 +1,11 @@
 package com.titan.arm.task;
 
-import com.titan.arm.constant.Constant;
-import com.titan.arm.dao.SchoolDao;
-import com.titan.arm.response.vo.School;
+import com.titan.arm.dao.DictionaryDao;
+import com.titan.arm.dict.DictionaryEnum;
+import com.titan.arm.entity.Dictionary;
 import com.titan.arm.error.CommonErrorCode;
 import com.titan.arm.pinyin.PinyinUtil;
+import com.titan.arm.response.vo.School;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
@@ -24,6 +25,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
+import java.util.regex.Pattern;
 
 /**
  * \* Created with IntelliJ IDEA.
@@ -42,7 +45,7 @@ public class SchoolSpiderTask {
     private SqlSessionFactory sqlSessionFactory;
 
     @Autowired
-    private SchoolDao schoolDao;
+    private DictionaryDao dictionaryDao;
 
     @Value("${spider.school.url}")
     private String url;
@@ -53,10 +56,10 @@ public class SchoolSpiderTask {
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
     public void syncSchoolSpider() {
-        /*先删除全部*/
-        schoolDao.deleteAll();
+        /*先删除全部学校字典*/
+        dictionaryDao.delete(DictionaryEnum.SCHOOL.getKey());
         long start = System.currentTimeMillis();
-        List<School> schoolList = new ArrayList<>();
+        List<Dictionary> dictionaries = new ArrayList<>();
         try {
             /*1.获取网页文档*/
             Document document = Jsoup.connect(url).get();
@@ -65,17 +68,18 @@ public class SchoolSpiderTask {
             /*遍历p标签，获取内容*/
             if (!Objects.isNull(schoolElements)) {
                 for (Element element : schoolElements) {
-                    //获取1开头的数据
-                    if (element.text().startsWith("1")) {
-                        School school = new School();
+                    //获取数字开头的数据
+                    if (Pattern.matches("[0-9].*",element.text())) {
+                        Dictionary dictionary=new Dictionary();
                         /*截取学校代码*/
                         String code = element.text().substring(0, 5).trim();
                         String name = element.text().substring(5, element.text().length()).trim();
-                        school.setCode(code);
-                        school.setName(name);
-                        school.setLetter(PinyinUtil.getFirstPinyinInitial(school.getName()));
-                        schoolList.add(school);
-                        Constant.schoolDicMap.put(code,name);
+                        dictionary.setId(UUID.randomUUID().toString().replaceAll("-",""));
+                        dictionary.setType(DictionaryEnum.SCHOOL.getKey());
+                        dictionary.setTypeKey(code);
+                        dictionary.setTypeValue(name);
+                        dictionary.setBz(PinyinUtil.getFirstPinyinInitial(dictionary.getTypeValue()));
+                        dictionaries.add(dictionary);
                     }
                 }
             }
@@ -83,11 +87,11 @@ public class SchoolSpiderTask {
             log.error(CommonErrorCode.ERR_SPIDER_TASK_ERROR.getCode()+": "+CommonErrorCode.ERR_SPIDER_TASK_ERROR.getMsg(),
                     e);
         }
-        log.info("总数:{}", schoolList.size());
+        log.info("总数:{}", dictionaries.size());
         /*批处理插入*/
         SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, false);
-        SchoolDao schoolDaoBatch = sqlSession.getMapper(SchoolDao.class);
-        schoolList.stream().forEach(school -> schoolDaoBatch.insert(school));
+        DictionaryDao dictionaryDaoBatch = sqlSession.getMapper(DictionaryDao.class);
+        dictionaries.stream().forEach(dictionary -> dictionaryDaoBatch.insert(dictionary));
         sqlSession.commit();
         sqlSession.clearCache();
         long end = System.currentTimeMillis();

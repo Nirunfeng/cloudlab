@@ -1,7 +1,6 @@
 package com.titan.arm.service.impl;
 
 import com.titan.arm.constant.Constant;
-import com.titan.arm.dao.SchoolDao;
 import com.titan.arm.response.vo.School;
 import com.titan.arm.service.DictionaryService;
 import com.titan.arm.response.vo.SchoolDictVO;

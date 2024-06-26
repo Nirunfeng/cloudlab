@@ -15,9 +15,9 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  */
 @SpringBootApplication
 @EnableDiscoveryClient
-public class SpiderApplication {
+public class DictionaryApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SpiderApplication.class,args);
+        SpringApplication.run(DictionaryApplication.class,args);
     }
 }

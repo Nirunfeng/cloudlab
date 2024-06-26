@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.titan.arm.dao.DictionaryDao">
+    <!--    开启二级缓存,这样对所有select操作都会作缓存处理-->
+    <cache/>
+    <!--    开启二级缓存,这样对所有select操作都会作缓存处理-->
+
+    <!--返回结果-->
+    <resultMap id="DictionaryMap" type="com.titan.arm.entity.Dictionary">
+        <result property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="typeKey" column="type_key" jdbcType="VARCHAR"/>
+        <result property="typeValue" column="type_value" jdbcType="VARCHAR"/>
+        <result property="bz" column="bz" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="findAll" resultMap="DictionaryMap">
+        select *
+        from dictionary
+        order by type asc
+    </select>
+
+    <select id="query" parameterType="java.lang.String" resultMap="DictionaryMap">
+        select *
+        from dictionary where 1=1
+
+        order by letter asc
+    </select>
+
+    <!--插入方法-->
+    <insert id="insert" parameterType="com.titan.arm.response.vo.School">
+        INSERT INTO dictionary (id,type,type_key,type_value,bz)
+        VALUES (#{id}, #{type}, #{typeKey},#{typeValue},#{bz})
+    </insert>
+
+    <!--删除全部-->
+    <delete id="deleteAll">
+        delete
+        from dictionary
+    </delete>
+</mapper>

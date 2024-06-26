@@ -1,5 +1,6 @@
 package com.titan.arm.dao;
 
+import com.titan.arm.entity.Dictionary;
 import com.titan.arm.response.vo.School;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -15,12 +16,12 @@ import java.util.List;
  * \
  */
 @Mapper
-public interface SchoolDao {
+public interface DictionaryDao {
     /**
      * 插入方法
      * @param school
      */
-    void insert(School school);
+    void insert(Dictionary dictionary);
 
     void deleteAll();
 
