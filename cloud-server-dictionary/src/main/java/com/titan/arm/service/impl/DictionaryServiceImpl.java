@@ -1,6 +1,7 @@
 package com.titan.arm.service.impl;
 
 import com.titan.arm.constant.Constant;
+import com.titan.arm.dao.DictionaryDao;
 import com.titan.arm.response.vo.School;
 import com.titan.arm.service.DictionaryService;
 import com.titan.arm.response.vo.SchoolDictVO;
@@ -27,12 +28,12 @@ import java.util.Map;
 public class DictionaryServiceImpl implements DictionaryService {
 
     @Autowired
-    private SchoolDao schoolDao;
+    private DictionaryDao dictionaryDao;
 
     @Override
     public List<SchoolDictVO> queryPage(String name) throws Exception {
         List<SchoolDictVO> result=new ArrayList<>();
-        List<School> schoolList = schoolDao.query(name);
+        List<School> schoolList = dictionaryDao.query(name);
         if (!CollectionUtils.isEmpty(schoolList)){
             Map<String,List<School>> map=new HashMap<>();
             for (School school:schoolList){

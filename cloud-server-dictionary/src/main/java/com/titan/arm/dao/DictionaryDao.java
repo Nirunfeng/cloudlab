@@ -19,7 +19,7 @@ import java.util.List;
 public interface DictionaryDao {
     /**
      * 插入方法
-     * @param school
+     * @param dictionary
      */
     void insert(Dictionary dictionary);
 
