@@ -205,8 +205,7 @@ public class UserServiceImpl implements UserService {
         }
         List<User> userList=userDao.query(user,pageNo,pageSize);
         if (!CollectionUtils.isEmpty(userList)){
-            /*查询字典*/
-
+            dictionaryServiceClient.querySchoolDictionary();
             for (User user1:userList){
                 UserVO userVO=new UserVO();
                 BeanUtils.copyProperties(user1,userVO);

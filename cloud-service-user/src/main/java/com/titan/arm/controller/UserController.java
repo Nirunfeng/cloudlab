@@ -103,7 +103,8 @@ public class UserController {
         PageResponse<UserVO> pageResponse = new PageResponse<>();
         try {
             log.info("pageRequest is {}", JacksonUtil.toJSONString(pageRequest));
-            BaseResult<List<SchoolDictVO>> schoolDicts=dictionaryServiceClient.pageQuery("");
+            BaseResult baseResult=dictionaryServiceClient.querySchoolDictionary();
+            log.info(JacksonUtil.toJSONString(baseResult));
             /*计算页码*/
             Integer pageNo = 0;
             if (pageRequest.getPageNo() > 0) {

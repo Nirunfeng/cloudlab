@@ -22,15 +22,9 @@ public interface DictionaryServiceClient {
 
     /**
      * 查询全部字典
-     * @param name
+     * @param
      * @return
      */
-    @GetMapping("/dictionary/pageSchool.do")
-    BaseResult<List<SchoolDictVO>> pageQuery(String name) ;
-
-    /**
-     * 根据code值查询学校名称
-     */
-    @GetMapping("/querySchoolByCode.do")
-    BaseResult<String> querySchoolByCode(String code);
+    @GetMapping("/dictionary/querySchoolDictionary.do")
+    BaseResult<List<SchoolDictVO>> querySchoolDictionary() ;
 }
