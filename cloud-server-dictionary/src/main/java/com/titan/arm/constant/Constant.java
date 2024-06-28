@@ -1,5 +1,8 @@
 package com.titan.arm.constant;
 
+import com.titan.arm.entity.Dictionary;
+
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Constant {
 
     /**
-     * 学校字典
+     * 字典
      */
-    public static Map<String,String> schoolDicMap=new ConcurrentHashMap<>();
+    public static Map<String, List<Dictionary>> dictMap=new ConcurrentHashMap<>();
 }

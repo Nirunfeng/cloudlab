@@ -1,7 +1,6 @@
 package com.titan.arm.dao;
 
 import com.titan.arm.entity.Dictionary;
-import com.titan.arm.response.vo.School;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -17,15 +16,17 @@ import java.util.List;
  */
 @Mapper
 public interface DictionaryDao {
+
     /**
-     * 插入方法
-     * @param dictionary
+     * 查询全部字典
+     * @return
      */
-    void insert(Dictionary dictionary);
+    List<Dictionary> query();
 
-    void deleteAll();
-
-    List<School> findAll();
-
-    List<School> query(@Param("name") String name);
+    /**
+     * 根据学校查询
+     * @param name
+     * @return
+     */
+    List<Dictionary> querySchoolDictByName(@Param("name") String name);
 }

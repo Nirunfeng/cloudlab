@@ -5,7 +5,6 @@ import com.titan.arm.dict.DictionaryEnum;
 import com.titan.arm.entity.Dictionary;
 import com.titan.arm.error.CommonErrorCode;
 import com.titan.arm.pinyin.PinyinUtil;
-import com.titan.arm.response.vo.School;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
