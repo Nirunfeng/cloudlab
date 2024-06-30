@@ -42,9 +42,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private DictionaryServiceClient dictionaryServiceClient;
-
     @PostMapping("/register.do")
     @ApiOperation("创建用户")
     public BaseResult<Integer> create(@RequestBody UserParam param, HttpSession session) {
@@ -103,8 +100,6 @@ public class UserController {
         PageResponse<UserVO> pageResponse = new PageResponse<>();
         try {
             log.info("pageRequest is {}", JacksonUtil.toJSONString(pageRequest));
-            BaseResult baseResult=dictionaryServiceClient.querySchoolDictionary();
-            log.info(JacksonUtil.toJSONString(baseResult));
             /*计算页码*/
             Integer pageNo = 0;
             if (pageRequest.getPageNo() > 0) {

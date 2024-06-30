@@ -17,7 +17,7 @@ import java.util.List;
  * @Description: 字典fegin接口
  * @Date 2024/6/25 21:58
  **/
-@FeignClient(value = "cloud-service-spider",path = "/service-spider",contextId = "dictionary")
+@FeignClient(value = "cloud-service-dictionary",path = "/service-dictionary",contextId = "dictionary")
 public interface DictionaryServiceClient {
 
     /**
