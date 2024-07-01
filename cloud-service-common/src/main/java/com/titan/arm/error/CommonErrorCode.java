@@ -36,6 +36,7 @@ public enum CommonErrorCode {
     ERR_SPIDER_TASK_ERROR("0x100031","爬虫任务执行失败"),
     ERR_SCHOOL_DIC_ERROR("0x100032","学校字典查询失败"),
     ERR_DICTIONARY_SYNC_ERROR("0x100033","字典同步任务异常"),
+    ERR_MENU_QUERY_ERROR("0x100034","菜单查询失败"),
     ;
     private String code;
 
