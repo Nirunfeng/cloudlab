@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="com.aicode.state.processLog.ProcessLogState">
+    <option name="branchName" value="master" />
+    <option name="gitAddr" value="https://github.com/Nirunfeng/cloudlab.git" />
+  </component>
+</project>
