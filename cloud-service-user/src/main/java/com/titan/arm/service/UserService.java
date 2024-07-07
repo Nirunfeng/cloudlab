@@ -1,7 +1,8 @@
 package com.titan.arm.service;
 
-import com.titan.arm.entity.User;
+import com.titan.arm.repository.entity.User;
 import com.titan.arm.param.UserParam;
+import com.titan.arm.response.PageResponse;
 import com.titan.arm.vo.UserVO;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,9 +21,6 @@ public interface UserService {
 
     public int insert(User user) throws Exception;
 
-    public List<User> queryByUsername(String username,Integer pageNo,Integer pageSize) throws Exception;
-
-    public List<User> findAllUser() throws Exception;
 
     public int delete(Long id);
 
@@ -31,8 +29,6 @@ public interface UserService {
     public int update(String username,String password);
 
     public User queryOneByUsername(String username) throws Exception;
-
-    public Integer getCount(UserParam userParam) throws Exception;
 
     UserVO findUser(Long id) throws Exception;
 
@@ -62,5 +58,5 @@ public interface UserService {
      */
     UserVO updateInformation(UserParam param, User user);
 
-    List<UserVO> queryPage(UserParam data, Integer pageNo, Integer pageSize);
+    PageResponse<UserVO> queryPage(UserParam data, Integer pageNo, Integer pageSize);
 }

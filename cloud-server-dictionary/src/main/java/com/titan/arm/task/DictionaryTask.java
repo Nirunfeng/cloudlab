@@ -1,8 +1,8 @@
 package com.titan.arm.task;
 
 import com.titan.arm.constant.Constant;
-import com.titan.arm.dao.DictionaryDao;
-import com.titan.arm.entity.Dictionary;
+import com.titan.arm.repository.DictionaryRepository;
+import com.titan.arm.repository.entity.Dictionary;
 import com.titan.arm.error.CommonErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ import java.util.List;
 public class DictionaryTask {
 
     @Autowired
-    private DictionaryDao dictionaryDao;
+    private DictionaryRepository dictionaryRepository;
 
     /**
      * 每10分钟同步一次字典
@@ -34,7 +34,7 @@ public class DictionaryTask {
     @Scheduled(cron = "0 */10 * * * ?")
     public void syncDictionary(){
         try{
-            List<Dictionary> dictionaries=dictionaryDao.query();
+            List<Dictionary> dictionaries=dictionaryRepository.findAll();
             if (!CollectionUtils.isEmpty(dictionaries)){
                 for (Dictionary dictionary:dictionaries){
                     if (Constant.dictMap.containsKey(dictionary.getType())){

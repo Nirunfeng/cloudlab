@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import java.util.Date;
 
 /**
@@ -17,7 +18,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Goods {
+public class Goods{
 
     private String id;
 
@@ -39,11 +40,13 @@ public class Goods {
 
     private String fileUrl;
 
+    @Column(name = "create_time")
     private Date createTime;
 
+    @Column(name = "update_time")
     private Date updateTime;
 
-    //软删除标记 0：删除 1：未删除
+    @Column(name = "del_flag")
     private Integer delFlag;
 
 }
