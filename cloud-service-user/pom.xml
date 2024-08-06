@@ -12,7 +12,7 @@
     <name>user-service</name>
     <url>http://maven.apache.org/</url>
     <inceptionYear>2001</inceptionYear>
-    <description>用户服务接口</description>
+    <description>用户服务接口,登录、注册、个人中心、聊天服务等</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

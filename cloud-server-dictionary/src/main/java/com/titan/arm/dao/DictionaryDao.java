@@ -29,4 +29,11 @@ public interface DictionaryDao {
      * @return
      */
     List<Dictionary> querySchoolDictByName(@Param("name") String name);
+
+    /**
+     * 根据代码精确查询
+     * @param code
+     * @return
+     */
+    Dictionary querySchoolDictByCode(@Param("code") String code);
 }

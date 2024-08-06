@@ -1,5 +1,6 @@
 package com.titan.arm.service;
 
+import com.titan.arm.response.vo.School;
 import com.titan.arm.response.vo.SchoolDictVO;
 
 import java.util.List;
@@ -27,4 +28,11 @@ public interface DictionaryService {
      * @return
      */
     List<SchoolDictVO> querySchoolDictByName(String name) throws Exception;
+
+    /**
+     * 根据学校代码查询学校字典
+     * @param code
+     * @return
+     */
+    School querySchoolDictByCode(String code) throws Exception;
 }

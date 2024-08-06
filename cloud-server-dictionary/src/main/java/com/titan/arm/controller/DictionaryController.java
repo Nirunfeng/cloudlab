@@ -2,6 +2,7 @@ package com.titan.arm.controller;
 
 import com.titan.arm.error.CommonErrorCode;
 import com.titan.arm.response.BaseResult;
+import com.titan.arm.response.vo.School;
 import com.titan.arm.response.vo.SchoolDictVO;
 import com.titan.arm.service.DictionaryService;
 import io.swagger.annotations.Api;
@@ -52,6 +53,19 @@ public class DictionaryController {
         try {
             List<SchoolDictVO> dictVOS=dictionaryService.querySchoolDictByName(name);
             return BaseResult.success(dictVOS);
+        }catch (Exception e){
+            log.error(CommonErrorCode.ERR_SCHOOL_DIC_ERROR.getCode(),e);
+            return BaseResult.error(CommonErrorCode.ERR_SCHOOL_DIC_ERROR.getCode(),
+                    CommonErrorCode.ERR_SCHOOL_DIC_ERROR.getMsg());
+        }
+    }
+
+    @GetMapping("/querySchoolDictionaryByCode.do")
+    @ApiOperation("根据学校代码查询学校字典")
+    public BaseResult<School> querySchoolDictionaryByCode(@RequestParam @ApiParam("学校代码") String code){
+        try {
+            School school=dictionaryService.querySchoolDictByCode(code);
+            return BaseResult.success(school);
         }catch (Exception e){
             log.error(CommonErrorCode.ERR_SCHOOL_DIC_ERROR.getCode(),e);
             return BaseResult.error(CommonErrorCode.ERR_SCHOOL_DIC_ERROR.getCode(),

@@ -28,8 +28,9 @@ public class InitConfig implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        log.info("同步字典");
+        /*同步字典*/
         dictionaryTask.syncDictionary();
-        log.info("同步结束 dictMap:{}", JacksonUtil.toJSONString(Constant.dictMap));
+        /*同步菜单*/
+        dictionaryTask.syncMenu();
     }
 }

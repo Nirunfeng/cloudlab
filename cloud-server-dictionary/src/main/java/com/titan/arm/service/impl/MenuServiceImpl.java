@@ -1,5 +1,6 @@
 package com.titan.arm.service.impl;
 
+import com.titan.arm.constant.Constant;
 import com.titan.arm.dao.MenuDao;
 import com.titan.arm.entity.MenuInfo;
 import com.titan.arm.service.MenuService;
@@ -28,17 +29,13 @@ public class MenuServiceImpl implements MenuService {
     @Autowired
     private MenuDao menuDao;
 
+    /**
+     * 查询所有菜单
+     * @return
+     * @throws Exception
+     */
     @Override
     public List<MenuVO> queryMenus() throws Exception {
-        List<MenuVO> menuVOS = new ArrayList<>();
-        List<MenuInfo> menuInfos = menuDao.query();
-        if (!CollectionUtils.isEmpty(menuInfos)) {
-            for (MenuInfo menuInfo : menuInfos) {
-                MenuVO menuVO = new MenuVO();
-                BeanUtils.copyProperties(menuInfo, menuVO);
-                menuVOS.add(menuVO);
-            }
-        }
-        return menuVOS;
+        return Constant.menuMap.get(Constant.MENU);
     }
 }

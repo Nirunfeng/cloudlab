@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @Description
  * @Author Administrator
- * @Description: app端菜单
+ * @Description: app端菜单 各个专业的类别
  * @Date 2024/7/1 22:36
  **/
 @RestController

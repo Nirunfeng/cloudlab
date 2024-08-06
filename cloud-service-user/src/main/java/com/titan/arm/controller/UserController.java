@@ -99,7 +99,7 @@ public class UserController {
     public BaseResult<PageResponse<UserVO>> query(@RequestBody PageRequest<UserParam> pageRequest) {
         PageResponse<UserVO> pageResponse = new PageResponse<>();
         try {
-            log.info("pageRequest is {}", JacksonUtil.toJSONString(pageRequest));
+            log.debug("pageRequest is {}", JacksonUtil.toJSONString(pageRequest));
             /*计算页码*/
             Integer pageNo = 0;
             if (pageRequest.getPageNo() > 0) {

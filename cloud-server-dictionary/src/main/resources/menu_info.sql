@@ -16,3 +16,7 @@ CREATE TABLE `menu_info`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+--插入一条数据
+INSERT INTO menu_info(id,menu_name) VALUES ('080901','计算机科学与技术');
+

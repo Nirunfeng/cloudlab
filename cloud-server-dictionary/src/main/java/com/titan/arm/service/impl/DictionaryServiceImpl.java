@@ -29,6 +29,11 @@ public class DictionaryServiceImpl implements DictionaryService {
     @Autowired
     private DictionaryDao dictionaryDao;
 
+    /**
+     * 查询全部字典
+     * @return
+     * @throws Exception
+     */
     @Override
     public List<SchoolDictVO> querySchoolDictionary() throws Exception{
         List<SchoolDictVO> schoolDictVOS=new ArrayList<>();
@@ -59,6 +64,12 @@ public class DictionaryServiceImpl implements DictionaryService {
         return schoolDictVOS;
     }
 
+    /**
+     * 模糊查询学校
+     * @param name
+     * @return
+     * @throws Exception
+     */
     @Override
     public List<SchoolDictVO> querySchoolDictByName(String name) throws Exception{
         List<SchoolDictVO> schoolDictVOS=new ArrayList<>();
@@ -84,5 +95,21 @@ public class DictionaryServiceImpl implements DictionaryService {
             schoolDictVOS.add(schoolDictVO);
         }
         return schoolDictVOS;
+    }
+
+    /**
+     * 根据学校代码查询学校字典
+     * @param code
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public School querySchoolDictByCode(String code) throws Exception {
+        School school=new School();
+        Dictionary dictionary=dictionaryDao.querySchoolDictByCode(code);
+        school.setCode(dictionary.getTypeKey());
+        school.setName(dictionary.getTypeValue());
+        school.setLetter(dictionary.getBz());
+        return school;
     }
 }

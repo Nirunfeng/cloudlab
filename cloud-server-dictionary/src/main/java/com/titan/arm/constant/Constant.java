@@ -1,10 +1,12 @@
 package com.titan.arm.constant;
 
 import com.titan.arm.entity.Dictionary;
+import com.titan.arm.vo.MenuVO;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * \* Created with IntelliJ IDEA.
@@ -16,8 +18,15 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Constant {
 
+    public static String MENU="menu";
+
     /**
      * 字典
      */
     public static Map<String, List<Dictionary>> dictMap=new ConcurrentHashMap<>();
+
+    /**
+     * 菜单
+     */
+    public static Map<String, List<MenuVO>> menuMap=new ConcurrentHashMap<>();
 }

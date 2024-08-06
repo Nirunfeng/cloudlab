@@ -14,7 +14,7 @@
     <name>user-service</name>
     <url>http://maven.apache.org/</url>
     <inceptionYear>2001</inceptionYear>
-    <description>纯粹的字典服务</description>
+    <description>纯粹的字典服务、菜单等静态资源</description>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

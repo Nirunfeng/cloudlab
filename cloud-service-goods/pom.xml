@@ -11,7 +11,7 @@
     <name>Maven</name>
     <url>http://maven.apache.org/</url>
     <inceptionYear>2001</inceptionYear>
-    <description>课设的增删改查业务</description>
+    <description>课程设计的查询、发布、接取等业务</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -23,4 +23,13 @@
           and type = 'school'
           and type_value like CONCAT(CONCAT('%', #{name}, '%'))
     </select>
+
+    <!--根据代码精确查询-->
+    <select id="querySchoolDictByCode" parameterType="java.lang.String" resultMap="DictionaryMap">
+        select *
+        from dictionary
+        where 1 = 1
+          and type = 'school'
+          and type_code = #{code}
+    </select>
 </mapper>
