@@ -1,15 +1,13 @@
 package com.titan.arm.controller;
 
-import com.titan.arm.entity.User;
+import com.titan.arm.repository.entity.User;
 import com.titan.arm.error.CommonErrorCode;
-import com.titan.arm.fegin.DictionaryServiceClient;
 import com.titan.arm.json.JacksonUtil;
 import com.titan.arm.md5.MD5Util;
 import com.titan.arm.param.UserParam;
 import com.titan.arm.request.PageRequest;
 import com.titan.arm.response.BaseResult;
 import com.titan.arm.response.PageResponse;
-import com.titan.arm.response.vo.SchoolDictVO;
 import com.titan.arm.service.UserService;
 import com.titan.arm.vo.UserVO;
 import io.swagger.annotations.Api;
@@ -23,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * TODO
@@ -105,13 +102,9 @@ public class UserController {
             if (pageRequest.getPageNo() > 0) {
                 pageNo = pageRequest.getPageNo() - 1;
             }
-            List<UserVO> userList = userService.queryPage(pageRequest.getData(), pageNo, pageRequest.getPageSize());
-            /*计算total*/
-            Integer total = userService.getCount(pageRequest.getData());
+            pageResponse = userService.queryPage(pageRequest.getData(), pageNo, pageRequest.getPageSize());
             pageResponse.setPageNo(pageRequest.getPageNo());
             pageResponse.setPageSize(pageRequest.getPageSize());
-            pageResponse.setTotal(total);
-            pageResponse.setList(userList);
             return BaseResult.success(pageResponse);
         } catch (Exception e) {
             log.error(CommonErrorCode.ERR_USER_QUERY_ERROR.getMsg(), e);

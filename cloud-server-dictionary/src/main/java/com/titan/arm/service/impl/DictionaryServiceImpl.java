@@ -1,9 +1,9 @@
 package com.titan.arm.service.impl;
 
 import com.titan.arm.constant.Constant;
-import com.titan.arm.dao.DictionaryDao;
 import com.titan.arm.dict.DictionaryEnum;
-import com.titan.arm.entity.Dictionary;
+import com.titan.arm.repository.DictionaryRepository;
+import com.titan.arm.repository.entity.Dictionary;
 import com.titan.arm.response.vo.School;
 import com.titan.arm.response.vo.SchoolDictVO;
 import com.titan.arm.service.DictionaryService;
@@ -27,7 +27,7 @@ import java.util.*;
 public class DictionaryServiceImpl implements DictionaryService {
 
     @Autowired
-    private DictionaryDao dictionaryDao;
+    private DictionaryRepository dictionaryRepository;
 
     /**
      * 查询全部字典
@@ -73,7 +73,7 @@ public class DictionaryServiceImpl implements DictionaryService {
     @Override
     public List<SchoolDictVO> querySchoolDictByName(String name) throws Exception{
         List<SchoolDictVO> schoolDictVOS=new ArrayList<>();
-        List<Dictionary> dictionaries=dictionaryDao.querySchoolDictByName(name);
+        List<Dictionary> dictionaries=dictionaryRepository.findDictionaryByTypeValueLike(name);
         Map<String,List<School>> map=new TreeMap<>();
         for (Dictionary dictionary:dictionaries){
             School school=new School();

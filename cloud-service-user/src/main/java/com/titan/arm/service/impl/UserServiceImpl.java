@@ -1,14 +1,13 @@
 package com.titan.arm.service.impl;
 
-import com.titan.arm.dao.UserDao;
-import com.titan.arm.entity.User;
+import com.titan.arm.repository.UserRepository;
+import com.titan.arm.repository.entity.User;
 import com.titan.arm.fegin.DictionaryServiceClient;
 import com.titan.arm.file.FileUtil;
 import com.titan.arm.json.JacksonUtil;
 import com.titan.arm.md5.MD5Util;
 import com.titan.arm.param.UserParam;
-import com.titan.arm.response.BaseResult;
-import com.titan.arm.response.vo.SchoolDictVO;
+import com.titan.arm.response.PageResponse;
 import com.titan.arm.service.UserService;
 import com.titan.arm.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.servlet.http.HttpSession;
+import java.math.BigInteger;
 import java.util.*;
 
 /**
@@ -39,7 +41,10 @@ import java.util.*;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserDao userDao;
+    private UserRepository userRepository;
+
+    @Autowired
+    private EntityManager entityManager;
 
     @Autowired
     private DictionaryServiceClient dictionaryServiceClient;
@@ -71,70 +76,61 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int insert(User user) throws Exception {
-        int result = userDao.insert(user);
-        log.info("插入结果,{}", result);
-        return result;
+        userRepository.save(user);
+        return 0;
     }
 
-    @Override
-    public List<User> queryByUsername(String username, Integer pageNo, Integer pageSize) throws Exception {
-        List<User> userList = new ArrayList<>();
-        userList = userDao.queryByUsername(username, pageNo, pageSize);
-        return userList;
-    }
 
-    @Override
-    public List<User> findAllUser() throws Exception {
-        return null;
-    }
 
     @Override
     @Transactional
     public int delete(Long id) {
-        return userDao.delete(id);
+        userRepository.deleteById(id);
+        return 0;
     }
 
     @Override
     @Transactional
     public int deleteUsers(List<Long> ids) {
-        return userDao.deleteUsers(ids);
+        userRepository.deleteByIdIn(ids);
+        return 0;
     }
 
     @Override
     @Transactional
     public int update(String username, String password) {
         //对密码进行加密
-        return userDao.update(username, MD5Util.inputPassToFormPass(password));
+        User user=userRepository.findUserByUsername(username);
+        user.setPassword(MD5Util.inputPassToFormPass(password));
+        userRepository.save(user);
+        return 0;
     }
 
     @Override
     public User queryOneByUsername(String username) throws Exception {
         User user = null;
         if (StringUtils.isNotEmpty(username)) {
-            user = userDao.queryOneByUsername(username);
+            user = userRepository.findUserByUsername(username);
         }
         return user;
     }
 
-    @Override
-    public Integer getCount(UserParam userParam) throws Exception {
-        User user=new User();
-        BeanUtils.copyProperties(userParam,user);
-        return userDao.count(user);
-    }
 
     @Override
     public UserVO findUser(Long id) throws Exception {
         UserVO userVO = new UserVO();
-        User user = userDao.findUserById(id);
-        BeanUtils.copyProperties(user,userVO);
+        Optional<User> optional= userRepository.findById(id);
+        if (optional.isPresent()) {
+            BeanUtils.copyProperties(optional.get(), userVO);
+        }
         return userVO;
     }
 
     @Override
     public User login(UserParam param) throws Exception {
         //对密码进行加密
-        User user = userDao.login(param.getUsername(), MD5Util.inputPassToFormPass(param.getPassword()));
+        User user=userRepository.findUserByUsernameAndPassword(param.getUsername(),
+                MD5Util.inputPassToFormPass(param.getPassword()));
         return user;
     }
 
@@ -183,7 +179,7 @@ public class UserServiceImpl implements UserService {
         /*字段copy*/
         BeanUtils.copyProperties(param,user, JacksonUtil.getNullPropertyNames(param));
         /*update*/
-        userDao.updateInformation(user);
+        userRepository.save(user);
         BeanUtils.copyProperties(user,userVO);
         return userVO;
     }
@@ -197,13 +193,26 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public List<UserVO> queryPage(UserParam data, Integer pageNo, Integer pageSize) {
+    public PageResponse<UserVO> queryPage(UserParam data, Integer pageNo, Integer pageSize) {
+        PageResponse<UserVO> pageResponse=new PageResponse<>();
         List<UserVO> result=new ArrayList<>();
         User user=new User();
         if (!Objects.isNull(data)) {
             BeanUtils.copyProperties(data, user);
         }
-        List<User> userList=userDao.query(user,pageNo,pageSize);
+        StringBuffer selectSql=new StringBuffer();
+        StringBuffer countSql=new StringBuffer();
+        countSql.append("select * from user where 1=1 ");
+        countSql.append(getConditionSql(data));
+        selectSql.append("select * from user where 1=1 ");
+        selectSql.append(getConditionSql(data));
+        selectSql.append(" order by id desc");
+        Query query=entityManager.createQuery(selectSql.toString(),User.class);
+        if (pageNo>0) {
+            query.setFirstResult(pageNo-1);
+            query.setMaxResults(pageSize);
+        }
+        List<User> userList=query.getResultList();
         if (!CollectionUtils.isEmpty(userList)){
             dictionaryServiceClient.querySchoolDictionary();
             for (User user1:userList){
@@ -212,7 +221,34 @@ public class UserServiceImpl implements UserService {
                 result.add(userVO);
             }
         }
-        return result;
+        Query countQuery=entityManager.createQuery(countSql.toString());
+        BigInteger count=(BigInteger) countQuery.getSingleResult();
+        pageResponse.setList(result);
+        pageResponse.setTotal(count.bitCount());
+        return pageResponse;
+    }
+
+    private String getConditionSql(UserParam param){
+        StringBuffer sql=new StringBuffer();
+        if (null!=param.getId()){
+            sql.append("id="+param.getId()+" ");
+        }
+        if (StringUtils.isNotEmpty(param.getUsername())){
+            sql.append("username like '%"+param.getUsername()+"%' ");
+        }
+        if (StringUtils.isNotEmpty(param.getDescription())){
+            sql.append(" description llike '%"+param.getDescription()+"%' ");
+        }
+        if (StringUtils.isNotEmpty(param.getSchool())){
+            sql.append(" school='"+param.getSchool()+"' ");
+        }
+        if (StringUtils.isNotEmpty(param.getMajor())){
+            sql.append("major='"+param.getMajor()+"' ");
+        }
+        if (StringUtils.isNotEmpty(param.getGrade())){
+            sql.append("grade='"+param.getGrade()+"' ");
+        }
+        return sql.toString();
     }
 
     /**

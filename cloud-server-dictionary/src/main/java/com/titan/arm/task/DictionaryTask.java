@@ -1,14 +1,10 @@
 package com.titan.arm.task;
 
 import com.titan.arm.constant.Constant;
-import com.titan.arm.dao.DictionaryDao;
-import com.titan.arm.dao.MenuDao;
-import com.titan.arm.entity.Dictionary;
-import com.titan.arm.entity.MenuInfo;
+import com.titan.arm.repository.DictionaryRepository;
+import com.titan.arm.repository.entity.Dictionary;
 import com.titan.arm.error.CommonErrorCode;
-import com.titan.arm.vo.MenuVO;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -30,10 +26,7 @@ import java.util.List;
 public class DictionaryTask {
 
     @Autowired
-    private DictionaryDao dictionaryDao;
-
-    @Autowired
-    private MenuDao menuDao;
+    private DictionaryRepository dictionaryRepository;
 
     /**
      * 每10分钟同步一次字典
@@ -41,7 +34,7 @@ public class DictionaryTask {
     @Scheduled(cron = "0 */10 * * * ?")
     public void syncDictionary(){
         try{
-            List<Dictionary> dictionaries=dictionaryDao.query();
+            List<Dictionary> dictionaries=dictionaryRepository.findAll();
             if (!CollectionUtils.isEmpty(dictionaries)){
                 for (Dictionary dictionary:dictionaries){
                     if (Constant.dictMap.containsKey(dictionary.getType())){
@@ -55,30 +48,6 @@ public class DictionaryTask {
             }
         }catch (Exception e){
             log.error(CommonErrorCode.ERR_DICTIONARY_SYNC_ERROR.getCode()+CommonErrorCode.ERR_DICTIONARY_SYNC_ERROR.getMsg(),
-                    e);
-        }
-    }
-
-    /**
-     * 定时同步菜单服务
-     */
-    @Scheduled(cron = "0 */10 * * * ?")
-    public void syncMenu(){
-        try {
-            List<MenuInfo> menuInfos=menuDao.query();
-            if (!CollectionUtils.isEmpty(menuInfos)){
-                //清除缓存
-                Constant.menuMap.clear();
-                List<MenuVO> menuVOS=new ArrayList<>();
-                for (MenuInfo menuInfo:menuInfos){
-                    MenuVO menuVO=new MenuVO();
-                    BeanUtils.copyProperties(menuInfo,menuVO);
-                    menuVOS.add(menuVO);
-                }
-                Constant.menuMap.put(Constant.MENU,menuVOS);
-            }
-        }catch (Exception e){
-            log.error(CommonErrorCode.ERR_MENU_QUERY_ERROR.getCode()+CommonErrorCode.ERR_MENU_QUERY_ERROR.getMsg(),
                     e);
         }
     }
