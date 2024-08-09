@@ -53,13 +53,13 @@ public class UserController {
                         CommonErrorCode.ERR_MAIL_VERIFYCODE_UNUSED_ERROR.getMsg());
             }
             /*比对验证码和邮箱*/
-            if (!email.equals(param.getUsername().trim())) {
-                return BaseResult.error(CommonErrorCode.ERR_MAIL_NOT_VERIFY_ERROR.getCode(),
-                        CommonErrorCode.ERR_MAIL_NOT_VERIFY_ERROR.getMsg());
-            }
             if (!verifyCode.equals(param.getVerifyCode().trim())) {
                 return BaseResult.error(CommonErrorCode.ERR_CODE_NOT_VERIFY_ERROR.getCode(),
                         CommonErrorCode.ERR_CODE_NOT_VERIFY_ERROR.getMsg());
+            }
+            if (!email.equals(param.getUsername().trim())) {
+                return BaseResult.error(CommonErrorCode.ERR_MAIL_NOT_VERIFY_ERROR.getCode(),
+                        CommonErrorCode.ERR_MAIL_NOT_VERIFY_ERROR.getMsg());
             }
             /*判断参数合规性*/
             if (StringUtils.isNotEmpty(param.getUsername()) && StringUtils.isNotEmpty(param.getPassword())) {

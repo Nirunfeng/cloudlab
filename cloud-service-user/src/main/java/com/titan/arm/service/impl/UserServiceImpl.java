@@ -202,12 +202,15 @@ public class UserServiceImpl implements UserService {
         }
         StringBuffer selectSql=new StringBuffer();
         StringBuffer countSql=new StringBuffer();
+        Map<String,Object> map=new HashMap<>();
         countSql.append("select * from user where 1=1 ");
-        countSql.append(getConditionSql(data));
+        String sql=getConditionSql(data,map);
+        countSql.append(sql);
         selectSql.append("select * from user where 1=1 ");
-        selectSql.append(getConditionSql(data));
+        selectSql.append(sql);
         selectSql.append(" order by id desc");
         Query query=entityManager.createQuery(selectSql.toString(),User.class);
+        setParameter(query,map);
         if (pageNo>0) {
             query.setFirstResult(pageNo-1);
             query.setMaxResults(pageSize);
@@ -222,31 +225,38 @@ public class UserServiceImpl implements UserService {
             }
         }
         Query countQuery=entityManager.createQuery(countSql.toString());
+        setParameter(countQuery,map);
         BigInteger count=(BigInteger) countQuery.getSingleResult();
         pageResponse.setList(result);
         pageResponse.setTotal(count.bitCount());
         return pageResponse;
     }
 
-    private String getConditionSql(UserParam param){
+    private String getConditionSql(UserParam param,Map<String,Object> map){
         StringBuffer sql=new StringBuffer();
         if (null!=param.getId()){
-            sql.append("id="+param.getId()+" ");
+            sql.append("id=:id ");
+            map.put("id",param.getId());
         }
         if (StringUtils.isNotEmpty(param.getUsername())){
-            sql.append("username like '%"+param.getUsername()+"%' ");
+            sql.append("username=:username ");
+            map.put("username",param.getUsername());
         }
         if (StringUtils.isNotEmpty(param.getDescription())){
-            sql.append(" description llike '%"+param.getDescription()+"%' ");
+            sql.append(" description like :description ");
+            map.put("description","%"+param.getDescription()+"%");
         }
         if (StringUtils.isNotEmpty(param.getSchool())){
-            sql.append(" school='"+param.getSchool()+"' ");
+            sql.append(" school=:school ");
+            map.put("school",param.getSchool());
         }
         if (StringUtils.isNotEmpty(param.getMajor())){
-            sql.append("major='"+param.getMajor()+"' ");
+            sql.append("major=:major ");
+            map.put("major",param.getMajor());
         }
         if (StringUtils.isNotEmpty(param.getGrade())){
-            sql.append("grade='"+param.getGrade()+"' ");
+            sql.append("grade=:grade ");
+            map.put("grade",param.getGrade());
         }
         return sql.toString();
     }
@@ -262,6 +272,12 @@ public class UserServiceImpl implements UserService {
             str.append(random.nextInt(10));
         }
         return str.toString();
+    }
+
+    private void setParameter(Query query,Map<String,Object> map){
+        for (Map.Entry<String,Object> entry:map.entrySet()){
+            query.setParameter(entry.getKey(),entry.getValue());
+        }
     }
 
 }
