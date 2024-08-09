@@ -23,4 +23,6 @@ public interface DictionaryRepository extends JpaRepository<Dictionary,String> {
      * @return
      */
     List<Dictionary> findDictionaryByTypeValueLike(String name);
+
+    Dictionary findDictionaryByTypeKey(String code);
 }

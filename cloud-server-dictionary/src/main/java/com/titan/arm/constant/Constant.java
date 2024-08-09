@@ -1,6 +1,8 @@
 package com.titan.arm.constant;
 
-import com.titan.arm.entity.Dictionary;
+
+import com.titan.arm.repository.entity.Dictionary;
+import com.titan.arm.vo.MenuVO;
 
 import java.util.List;
 import java.util.Map;

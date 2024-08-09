@@ -106,7 +106,7 @@ public class DictionaryServiceImpl implements DictionaryService {
     @Override
     public School querySchoolDictByCode(String code) throws Exception {
         School school=new School();
-        Dictionary dictionary=dictionaryDao.querySchoolDictByCode(code);
+        Dictionary dictionary=dictionaryRepository.findDictionaryByTypeKey(code);
         school.setCode(dictionary.getTypeKey());
         school.setName(dictionary.getTypeValue());
         school.setLetter(dictionary.getBz());

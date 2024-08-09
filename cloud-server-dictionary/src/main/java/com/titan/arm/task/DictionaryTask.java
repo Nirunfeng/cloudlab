@@ -2,9 +2,13 @@ package com.titan.arm.task;
 
 import com.titan.arm.constant.Constant;
 import com.titan.arm.repository.DictionaryRepository;
+import com.titan.arm.repository.MenuRepository;
 import com.titan.arm.repository.entity.Dictionary;
 import com.titan.arm.error.CommonErrorCode;
+import com.titan.arm.repository.entity.MenuInfo;
+import com.titan.arm.vo.MenuVO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -28,6 +32,9 @@ public class DictionaryTask {
     @Autowired
     private DictionaryRepository dictionaryRepository;
 
+    @Autowired
+    private MenuRepository menuRepository;
+
     /**
      * 每10分钟同步一次字典
      */
@@ -45,6 +52,28 @@ public class DictionaryTask {
                         Constant.dictMap.put(dictionary.getType(),dictionaryList);
                     }
                 }
+            }
+        }catch (Exception e){
+            log.error(CommonErrorCode.ERR_DICTIONARY_SYNC_ERROR.getCode()+CommonErrorCode.ERR_DICTIONARY_SYNC_ERROR.getMsg(),
+                    e);
+        }
+    }
+
+    /**
+     * 同步菜单
+     */
+    @Scheduled(cron = "0 */10 * * * ?")
+    public void syncMenu() {
+        try{
+            List<MenuInfo> menuInfos=menuRepository.findAll();
+            if (!CollectionUtils.isEmpty(menuInfos)){
+                List<MenuVO> menuVOS=new ArrayList<>();
+                for (MenuInfo menuInfo:menuInfos){
+                    MenuVO menuVO=new MenuVO();
+                    BeanUtils.copyProperties(menuInfo,menuVO);
+                    menuVOS.add(menuVO);
+                }
+                Constant.menuMap.put(Constant.MENU,menuVOS);
             }
         }catch (Exception e){
             log.error(CommonErrorCode.ERR_DICTIONARY_SYNC_ERROR.getCode()+CommonErrorCode.ERR_DICTIONARY_SYNC_ERROR.getMsg(),
