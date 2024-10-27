@@ -25,7 +25,7 @@ public enum CommonErrorCode {
     ERR_USER_UPDATE_ERROR("0x100016","用户密码修改失败"),
     ERR_LOGIN_ERROR("0x100017","用户登录失败"),
     ERR_PASSWORD_REPEAT_ERROR("0x100018","密码与原密码一致，请重新输入"),
-    ERR_IMAGE_UPLOAD_ERROR("0x100019","头像上传失败"),
+    ERR_IMAGE_UPLOAD_ERROR("0x100019","文件上传失败"),
     ERR_USER_NOT_EXIST_ERROR("0x100020","用户名密码错误或用户不存在"),
     ERR_MAIL_SEND_ERROR("0x100021","验证码邮件发送失败"),
     ERR_MAIL_VERIFYCODE_UNUSED_ERROR("0x100022","验证码过期，请重新获取验证码"),

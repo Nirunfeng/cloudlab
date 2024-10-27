@@ -15,6 +15,7 @@
         <module>cloud-service-dictionary</module>
         <module>cloud-service-spider</module>
         <module>cloud-service-goods</module>
+        <module>cloud-service-minio</module>
     </modules>
     <packaging>pom</packaging>
     <description>暂时还没想好</description>

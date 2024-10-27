@@ -1,5 +1,6 @@
 package com.titan.arm.service.impl;
 
+import com.titan.arm.fegin.MinioServiceClient;
 import com.titan.arm.repository.UserRepository;
 import com.titan.arm.repository.entity.User;
 import com.titan.arm.fegin.DictionaryServiceClient;
@@ -48,6 +49,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private DictionaryServiceClient dictionaryServiceClient;
+
+    @Autowired
+    private MinioServiceClient minioServiceClient;
 
     /**
      * 邮件发送服务
@@ -139,12 +143,9 @@ public class UserServiceImpl implements UserService {
         String imgUrl = null;
         if (file != null) {
             //获得文件名字
-            String fileName = file.getOriginalFilename();
-            imgUrl = FileUtil.upload(file, avatarPath, fileName);
+            imgUrl = minioServiceClient.upload(file).getData();
         }
-        if (StringUtils.isNotEmpty(imgUrl)) ;
-        String fileUrl = "http://" + ip + ":" + port + context + "/files/" + imgUrl;
-        return fileUrl;
+        return imgUrl;
     }
 
     /**
