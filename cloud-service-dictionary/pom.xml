@@ -9,7 +9,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>cloud-server-dictionary</artifactId>
+    <artifactId>cloud-service-dictionary</artifactId>
 
     <name>user-service</name>
     <url>http://maven.apache.org/</url>

@@ -12,7 +12,7 @@
         <module>cloud-service-user</module>
         <module>cloud-service-common</module>
         <module>cloud-service-tool</module>
-        <module>cloud-server-dictionary</module>
+        <module>cloud-service-dictionary</module>
         <module>cloud-service-spider</module>
         <module>cloud-service-goods</module>
     </modules>
