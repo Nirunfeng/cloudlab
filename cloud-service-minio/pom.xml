@@ -17,17 +17,33 @@
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
-            <version>8.3.6</version>
+            <version>8.2.1</version>
         </dependency>
         <dependency>
             <groupId>com.titan.arm</groupId>
             <artifactId>cloud-service-common</artifactId>
             <version>1.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-data-jpa</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.titan.arm</groupId>
             <artifactId>cloud-service-tool</artifactId>
             <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <!--SpringCloud consul-server -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-consul-discovery</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
     </dependencies>
 </project>
