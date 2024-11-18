@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * \* Created with IntelliJ IDEA.
@@ -73,19 +74,25 @@ public class DictionaryServiceImpl implements DictionaryService {
     @Override
     public List<SchoolDictVO> querySchoolDictByName(String name) throws Exception{
         List<SchoolDictVO> schoolDictVOS=new ArrayList<>();
-        List<Dictionary> dictionaries=dictionaryRepository.findDictionaryByTypeValueLike(name);
+        Map<String,Dictionary> dictionarieMap=new HashMap<>();
+        for (Dictionary dictionary:Constant.dictMap.get(DictionaryEnum.SCHOOL.getKey())){
+            dictionarieMap.put(dictionary.getTypeKey()+"_"+dictionary.getTypeValue(),dictionary);
+        }
         Map<String,List<School>> map=new TreeMap<>();
-        for (Dictionary dictionary:dictionaries){
+        for (Map.Entry<String,Dictionary> entry:dictionarieMap.entrySet()){
+            if (!entry.getKey().contains(name)){
+                continue;
+            }
             School school=new School();
-            school.setCode(dictionary.getTypeKey());
-            school.setName(dictionary.getTypeValue());
-            school.setLetter(dictionary.getBz());
-            if (map.containsKey(dictionary.getBz())){
-                map.get(dictionary.getBz()).add(school);
+            school.setCode(entry.getValue().getTypeKey());
+            school.setName(entry.getValue().getTypeValue());
+            school.setLetter(entry.getValue().getBz());
+            if (map.containsKey(entry.getValue().getBz())){
+                map.get(entry.getValue().getBz()).add(school);
             }else {
                 List<School> schools=new ArrayList<>();
                 schools.add(school);
-                map.put(dictionary.getBz(),schools);
+                map.put(entry.getValue().getBz(),schools);
             }
         }
         for (Map.Entry<String,List<School>> entry:map.entrySet()){
@@ -106,7 +113,8 @@ public class DictionaryServiceImpl implements DictionaryService {
     @Override
     public School querySchoolDictByCode(String code) throws Exception {
         School school=new School();
-        Dictionary dictionary=dictionaryRepository.findDictionaryByTypeKey(code);
+        Map<String,Dictionary> dictionaries=Constant.dictMap.get(DictionaryEnum.SCHOOL.getKey()).stream().collect(Collectors.toMap(Dictionary::getTypeKey,Dictionary->Dictionary));
+        Dictionary dictionary=dictionaries.get(code);
         school.setCode(dictionary.getTypeKey());
         school.setName(dictionary.getTypeValue());
         school.setLetter(dictionary.getBz());
